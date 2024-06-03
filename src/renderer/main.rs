@@ -45,6 +45,7 @@ impl ReDropApp {
     fn new(config: config::Config) -> Self {
         let project_m = Arc::new(ProjectM::create());
         let audio = audio::Audio::new(Arc::clone(&project_m));
+        project_m.load_preset_file("./presets/!test/reactive.milk", false);
 
         Self {
             project_m,

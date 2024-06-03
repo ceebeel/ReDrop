@@ -16,8 +16,10 @@ impl Audio {
     pub fn new(project_m: ProjectMWrapped) -> Self {
         let host = cpal::default_host();
         let device = host
-            .default_output_device()
+            .default_input_device()
             .expect("No output device available");
+
+        println!("Using default output device: {:?}", device.name());
 
         Self {
             device,
@@ -30,7 +32,9 @@ impl Audio {
         let mut config: StreamConfig = self.device.default_input_config().unwrap().into();
         // TODO: Calculate correct buffer size with frame rate (fps)
         // TODO: Fix alsa sample rate (only odd numbers are supported)
-        config.buffer_size = BufferSize::Fixed(768);
+
+        config.buffer_size = BufferSize::Fixed(800);
+        println!("Config: {:?}", config);
 
         let err_fn = |err: cpal::StreamError| {
             eprintln!("An error occurred on the output audio stream: {}", err)
@@ -56,7 +60,8 @@ impl Audio {
             if !self.is_capturing {
                 break;
             }
-            std::thread::sleep(std::time::Duration::from_millis(1)); // TODO: Check if sync with frame rate
+            // TODO : Move into the loop !?
+            std::thread::sleep(std::time::Duration::from_millis(1)); // TODO: Check if sync with frame rate !
         }
     }
 }
