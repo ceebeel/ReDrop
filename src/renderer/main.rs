@@ -46,7 +46,7 @@ impl ReDropApp {
         let audio = audio::Audio::new(Arc::clone(&project_m));
         // TODO: Option: Skip ProjetM default preset.
         // TODO: Remove Test preset 
-        project_m.load_preset_file("./presets/!test/reactive.milk", false);
+        project_m.load_preset_file("./presets/! Test/reactive.milk", false);
 
         Self {
             project_m,
