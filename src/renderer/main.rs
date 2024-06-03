@@ -7,7 +7,6 @@ pub type ProjectMWrapped = Arc<ProjectM>;
 pub mod audio;
 pub mod config;
 
-// TODO : Can load 2 eframe::run_native() on 2 threads or make 2 app (Client (render), Server (settings))?
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     env_logger::init(); // Log to stderr (if you run with `RUST_LOG=debug`).
     let config = config::Config::default();
@@ -45,6 +44,8 @@ impl ReDropApp {
     fn new(config: config::Config) -> Self {
         let project_m = Arc::new(ProjectM::create());
         let audio = audio::Audio::new(Arc::clone(&project_m));
+        // TODO: Option: Skip ProjetM default preset.
+        // TODO: Remove Test preset 
         project_m.load_preset_file("./presets/!test/reactive.milk", false);
 
         Self {
