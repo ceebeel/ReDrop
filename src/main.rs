@@ -91,8 +91,12 @@ impl ReDropApp {
                 Node::PresetId(preset_id) => {
                     let preset = &self.presets[*preset_id];
                     if let Some(img_path) = &preset.img {
+                        let file_path = "file://".to_owned() + img_path.to_str().unwrap();
                         if ui
-                            .image("file://".to_owned() + img_path.to_str().unwrap())
+                            .add(egui::ImageButton::new(
+                                egui::Image::new(file_path)
+                                    .max_size(egui::Vec2::new(64.0, 64.0)),
+                            ))
                             .clicked()
                         {
                             println!("Preset:{:#?}", preset);
