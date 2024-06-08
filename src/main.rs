@@ -92,10 +92,10 @@ impl ReDropApp {
                     let preset = &self.presets[*preset_id];
                     if let Some(img_path) = &preset.img {
                         let file_path = "file://".to_owned() + img_path.to_str().unwrap();
+                        // TODO: Add image button into a Grid (Responsive ?)
                         if ui
                             .add(egui::ImageButton::new(
-                                egui::Image::new(file_path)
-                                    .max_size(egui::Vec2::new(64.0, 64.0)),
+                                egui::Image::new(file_path).max_size(egui::Vec2::new(64.0, 64.0)),
                             ))
                             .clicked()
                         {
@@ -117,6 +117,7 @@ impl ReDropApp {
 
 impl eframe::App for ReDropApp {
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
+        // TODO: Add Scroll
         egui::CentralPanel::default().show(ctx, |ui| {
             self.render_presets_tree(ui, &self.presets_tree);
         });
