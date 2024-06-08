@@ -20,11 +20,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     Ok(())
 }
 
+#[allow(dead_code)]
 #[derive(Debug)]
 struct Preset {
     id: usize,
     name: String,
-    path: PathBuf,
+    path: PathBuf, // Mybe don't save it here // Save in server with (id, path)
     img: Option<PathBuf>,
 }
 
@@ -50,8 +51,7 @@ impl ReDropApp {
     fn scan_presets(&mut self, path: &Path) -> BTreeMap<String, Node> {
         let mut node = BTreeMap::new();
         for entry in fs::read_dir(path).unwrap() {
-            let entry = entry.unwrap();
-            let path = entry.path();
+            let path = entry.unwrap().path();
             if path.is_dir() {
                 let mut inner_node = BTreeMap::new();
                 inner_node.extend(self.scan_presets(&path));
