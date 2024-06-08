@@ -23,7 +23,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 #[allow(dead_code)]
 #[derive(Debug)]
 struct Preset {
-    index: usize,
+    // index: usize, //TODO: Remove iy unused
     name: String,
     path: PathBuf,
     img: Option<PathBuf>,
@@ -66,7 +66,7 @@ impl ReDropApp {
                     let img = path.with_extension("jpg");
                     let preset_id = self.presets.len();
                     let preset = Preset {
-                        index: preset_id,
+                        // index: preset_id, //TODO: Remove iy unused
                         name: name.clone(),
                         path: path.clone(),
                         img: if img.exists() { Some(img) } else { None },
