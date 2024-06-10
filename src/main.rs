@@ -89,23 +89,35 @@ impl ReDropApp {
 
     // UI
     fn show_preset(&self, ui: &mut egui::Ui, preset_id: &usize) {
+        // TODO: Add image button into a Grid (Responsive ?)
         let preset = &self.presets[*preset_id];
         if let Some(img_path) = &preset.img {
             let file_path = "file://".to_owned() + img_path.to_str().unwrap();
-            // TODO: Add image button into a Grid (Responsive ?)
-            if ui
-                .add(egui::ImageButton::new(
-                    egui::Image::new(file_path).fit_to_exact_size(egui::Vec2::new(64.0, 64.0)),
-                ))
-                .clicked()
-            {
+            let image = egui::Image::new(&file_path).fit_to_exact_size(egui::Vec2::new(64., 64.));
+            let image_hovered =
+                egui::Image::new(&file_path).fit_to_exact_size(egui::Vec2::new(96., 96.));
+            let image_button = egui::ImageButton::new(image).frame(false);
+            let response = ui.add(image_button);
+
+            if response.hovered() {
+                let pos = response.rect.center() - egui::Vec2::new(48., 48.); // image_hovered size / 2
+                let _area_response = egui::Area::new("hovered_image".into())
+                    .fixed_pos(pos)
+                    .order(egui::Order::Tooltip)
+                    .show(ui.ctx(), |ui| {
+                        ui.add(image_hovered);
+                    });
+            }
+
+            if response.clicked() {
                 self.send_load_preset_request(preset.id)
             }
         } else if ui.button(&preset.name).clicked() {
             self.send_load_preset_request(preset.id)
+            // TODO: Button must be square
+            // TODO: Idea: Create preview image on Right Click
         }
     }
-
     fn show_presets_tree(&self, ui: &mut egui::Ui, node: &BTreeMap<String, Node>) {
         for (name, node) in node {
             match node {
