@@ -17,7 +17,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let options = eframe::NativeOptions {
         viewport: egui::ViewportBuilder::default()
             .with_title("ReDrop")
-            .with_inner_size([config.window_width.unwrap(), config.window_height.unwrap()])
+            .with_inner_size([config.window_width, config.window_height])
             .with_resizable(false),
         ..Default::default()
     };
@@ -64,8 +64,8 @@ impl ReDropApp {
         if self.fullscreen {
             ctx.send_viewport_cmd(egui::viewport::ViewportCommand::Fullscreen(false));
             self.project_m.set_window_size(
-                self.config.window_width.unwrap() as usize,
-                self.config.window_height.unwrap() as usize,
+                self.config.window_width as usize,
+                self.config.window_height as usize,
             );
             self.fullscreen = false;
         } else {
@@ -84,32 +84,13 @@ impl ReDropApp {
     pub fn load_config(&self, config: &Config) {
         let project_m = &self.project_m;
 
-        if let Some(window_width) = config.window_width {
-            if let Some(window_height) = config.window_height {
-                project_m.set_window_size(window_width as usize, window_height as usize);
-            }
-        }
+        project_m.set_window_size(config.window_width as usize, config.window_height as usize);
+        project_m.set_fps(config.frame_rate);
+        let paths = vec![config.textures_path.clone()];
+        project_m.set_texture_search_paths(&paths, 1);
+        project_m.set_beat_sensitivity(config.beat_sensitivity);
+        project_m.set_preset_duration(config.preset_duration);
 
-        if let Some(frame_rate) = config.frame_rate {
-            project_m.set_fps(frame_rate);
-        }
-
-        if let Some(textures_path) = &config.textures_path {
-            let paths = vec![textures_path.into()];
-            project_m.set_texture_search_paths(&paths, 1)
-        }
-
-        // if let Some(presets_path) = &config.presets_path {
-        // TODO: Use Playlist (Add index to projectm crate) or Custom Presets Manager
-        // }
-
-        if let Some(beat_sensitivity) = config.beat_sensitivity {
-            project_m.set_beat_sensitivity(beat_sensitivity);
-        }
-
-        if let Some(preset_duration) = config.preset_duration {
-            project_m.set_preset_duration(preset_duration);
-        }
     }
 }
 

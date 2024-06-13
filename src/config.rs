@@ -8,25 +8,25 @@ pub type FrameRate = u32;
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct Config {
-    pub window_width: Option<f32>,     // Default: 800
-    pub window_height: Option<f32>,    // Default: 600
-    pub frame_rate: Option<FrameRate>, // Default: 60 fps
-    pub textures_path: Option<String>, // Default: ./textures
-    pub presets_path: Option<String>,  // Default: ./presets
-    pub beat_sensitivity: Option<f32>, // Default: 1.0
-    pub preset_duration: Option<f64>,  // Default: ? (in seconds)
+    pub window_width: f32,     // Default: 800
+    pub window_height: f32,    // Default: 600
+    pub frame_rate: FrameRate, // Default: 60 fps
+    pub presets_path: String,  // Default: ./presets
+    pub textures_path: String, // Default: ./textures
+    pub beat_sensitivity: f32, // Default: 1.0
+    pub preset_duration: f64,  // Default: ? (in seconds)
 }
 
 impl Default for Config {
     fn default() -> Self {
         Self {
-            window_width: Some(800.),
-            window_height: Some(600.),
-            frame_rate: Some(60),
-            textures_path: Some("./textures".to_string()),
-            presets_path: Some("./presets".to_string()),
-            beat_sensitivity: Some(1.),
-            preset_duration: Some(10.),
+            window_width: 800.,
+            window_height: 600.,
+            frame_rate: 60,
+            presets_path: "./presets".to_string(),
+            textures_path: "./textures".to_string(),
+            beat_sensitivity: 1.,
+            preset_duration: 10.,
         }
     }
 }
