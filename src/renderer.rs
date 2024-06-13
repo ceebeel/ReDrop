@@ -1,3 +1,4 @@
+use config::Config;
 use eframe::egui;
 use projectm::core::ProjectM;
 
@@ -9,7 +10,10 @@ pub mod config;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     env_logger::init(); // Log to stderr (if you run with `RUST_LOG=debug`).
-    let config = config::Config::default();
+    // TODO: Put config in user home directory
+    let config_path = std::path::PathBuf::from("./config.toml"); // "config.toml";
+    let config = config::Config::load_from_file_or_default(&config_path);
+    config.save_to_file(&std::path::PathBuf::from("./config.toml"));
     let options = eframe::NativeOptions {
         viewport: egui::ViewportBuilder::default()
             .with_title("ReDrop")
@@ -74,6 +78,37 @@ impl ReDropApp {
             self.project_m.set_window_size(width, height);
 
             self.fullscreen = true;
+        }
+    }
+    
+    pub fn load_config(&self, config: &Config) {
+        let project_m = &self.project_m;
+
+        if let Some(window_width) = config.window_width {
+            if let Some(window_height) = config.window_height {
+                project_m.set_window_size(window_width as usize, window_height as usize);
+            }
+        }
+
+        if let Some(frame_rate) = config.frame_rate {
+            project_m.set_fps(frame_rate);
+        }
+
+        if let Some(textures_path) = &config.textures_path {
+            let paths = vec![textures_path.into()];
+            project_m.set_texture_search_paths(&paths, 1)
+        }
+
+        // if let Some(presets_path) = &config.presets_path {
+        // TODO: Use Playlist (Add index to projectm crate) or Custom Presets Manager
+        // }
+
+        if let Some(beat_sensitivity) = config.beat_sensitivity {
+            project_m.set_beat_sensitivity(beat_sensitivity);
+        }
+
+        if let Some(preset_duration) = config.preset_duration {
+            project_m.set_preset_duration(preset_duration);
         }
     }
 }
