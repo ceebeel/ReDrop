@@ -38,6 +38,7 @@ impl Config {
             .unwrap_or_default()
     }
 
+    #[allow(dead_code)]
     pub fn save_to_file(&self, path: &PathBuf) {
         let data = toml::to_string(&self).unwrap();
         std::fs::write(path, data).unwrap();
@@ -73,6 +74,7 @@ impl Config {
         ui.end_row();
     }
 
+    #[allow(dead_code)]
     pub fn show(&mut self, config_draft: &mut Config, ui: &mut egui::Ui) {
         egui::Grid::new("config_grid")
             .num_columns(3)
