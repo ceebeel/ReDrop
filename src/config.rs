@@ -1,4 +1,6 @@
 use std::path::PathBuf;
+
+use egui::Vec2;
 use serde::Deserialize;
 use serde::Serialize;
 
@@ -44,7 +46,7 @@ impl Config {
     // pub fn save(&mut self, config: config) {
 
     // }
-
+    
     fn add_number_row<T: eframe::emath::Numeric>(&mut self, ui: &mut egui::Ui, name: &str, value: &mut T, min: f32, max: f32, step: f32){
         ui.label(name);
         ui.add(egui::DragValue::new(value).speed(step).clamp_range(min..=max));
@@ -53,7 +55,7 @@ impl Config {
 
     fn add_path_text_edit_row(&mut self, ui: &mut egui::Ui, name: &str, value: &mut String) {
         ui.label(name);
-        ui.add(egui::TextEdit::singleline(value).desired_width(200.));
+        ui.add(egui::TextEdit::singleline(value).min_size(Vec2::new(300., 0.))); // TODO: Maybe use desired_sise f32::INFINITY ?!
         let _ = ui.button("Open");
         ui.end_row();
     }
