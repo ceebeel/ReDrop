@@ -5,6 +5,8 @@ use std::path::{Path, PathBuf};
 
 pub type FrameRate = u32;
 
+// mod config;
+
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     env_logger::init();
     let options = eframe::NativeOptions::default();
@@ -37,13 +39,20 @@ enum Node {
 
 #[derive(Default)]
 struct ReDropApp {
+    config: config::Config,
+    config_draft: config::Config,
     presets: Vec<Preset>,
     presets_tree: BTreeMap<String, Node>,
 }
 
+mod config;
+
 impl ReDropApp {
     fn new() -> Self {
         let mut slf = Self::default();
+        slf.config =
+            config::Config::load_from_file_or_default(&std::path::PathBuf::from("./config.toml"));
+        slf.config_draft = slf.config.clone();
         slf.update_presets_tree();
         slf
     }
@@ -118,6 +127,7 @@ impl ReDropApp {
             // TODO: Idea: Create preview image on Right Click
         }
     }
+
     fn show_presets_tree(&self, ui: &mut egui::Ui, node: &BTreeMap<String, Node>) {
         for (name, node) in node {
             match node {
@@ -138,7 +148,9 @@ impl eframe::App for ReDropApp {
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
         // TODO: Add Scroll
         egui::CentralPanel::default().show(ctx, |ui| {
-            self.show_presets_tree(ui, &self.presets_tree);
+            self.show_presets_tree(ui, &self.presets_tree); // TODO: Move presets_tree in the fn/
+
+            self.config.show(&mut self.config_draft, ui);
         });
     }
 }
