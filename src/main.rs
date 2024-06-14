@@ -41,6 +41,7 @@ enum Node {
 struct ReDropApp {
     config: config::Config,
     config_draft: config::Config,
+    show_config: bool,
     presets: Vec<Preset>,
     presets_tree: BTreeMap<String, Node>,
 }
@@ -142,15 +143,41 @@ impl ReDropApp {
             }
         }
     }
+
+    fn show_config(&mut self, ctx: &egui::Context) {
+        ctx.show_viewport_immediate(
+            egui::ViewportId::from_hash_of("config_immediate_viewport"),
+            egui::ViewportBuilder::default()
+                .with_title("ReDrop Config")
+                .with_window_level(egui::WindowLevel::AlwaysOnTop)
+                .with_resizable(false)
+                .with_inner_size([480.0, 236.0]),
+            |ctx, _class| {
+                egui::CentralPanel::default().show(ctx, |ui| {
+                    self.config.show(&mut self.config_draft, ui);
+                });
+
+                if ctx.input(|i| i.viewport().close_requested()) {
+                    self.show_config = false;
+                }
+            },
+        );
+    }
 }
 
 impl eframe::App for ReDropApp {
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
+        if self.show_config {
+            self.show_config(ctx);
+        }
         // TODO: Add Scroll
+        egui::TopBottomPanel::top("top_panel").show(ctx, |ui| {
+            if ui.button("Config").clicked() {
+                self.show_config = true;
+            }
+        });
         egui::CentralPanel::default().show(ctx, |ui| {
             self.show_presets_tree(ui, &self.presets_tree); // TODO: Move presets_tree in the fn/
-
-            self.config.show(&mut self.config_draft, ui);
         });
     }
 }
