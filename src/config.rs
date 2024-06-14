@@ -46,10 +46,23 @@ impl Config {
     // pub fn save(&mut self, config: config) {
 
     // }
-    
-    fn add_number_row<T: eframe::emath::Numeric>(&mut self, ui: &mut egui::Ui, name: &str, value: &mut T, min: f32, max: f32, step: f32){
+
+    // UI
+    fn add_number_row<T: eframe::emath::Numeric>(
+        &mut self,
+        ui: &mut egui::Ui,
+        name: &str,
+        value: &mut T,
+        min: f32,
+        max: f32,
+        step: f32,
+    ) {
         ui.label(name);
-        ui.add(egui::DragValue::new(value).speed(step).clamp_range(min..=max));
+        ui.add(
+            egui::DragValue::new(value)
+                .speed(step)
+                .clamp_range(min..=max),
+        );
         ui.end_row();
     }
 
@@ -68,14 +81,48 @@ impl Config {
             .show(ui, |ui| {
                 ui.label("Window Size:");
                 ui.end_row();
-
-                self.add_number_row(ui, "    Width:", &mut config_draft.window_width, 100., 2000., 1.);
-                self.add_number_row(ui, "    Height:", &mut config_draft.window_height, 100., 2000., 1.);
-                self.add_number_row(ui, "Frame Rate:", &mut config_draft.frame_rate, 1., 144., 1.);
+                self.add_number_row(
+                    ui,
+                    "    Width:",
+                    &mut config_draft.window_width,
+                    100.,
+                    2000.,
+                    1.,
+                );
+                self.add_number_row(
+                    ui,
+                    "    Height:",
+                    &mut config_draft.window_height,
+                    100.,
+                    2000.,
+                    1.,
+                );
+                self.add_number_row(
+                    ui,
+                    "Frame Rate:",
+                    &mut config_draft.frame_rate,
+                    1.,
+                    144.,
+                    1.,
+                );
                 self.add_path_text_edit_row(ui, "Presets Path:", &mut config_draft.presets_path);
                 self.add_path_text_edit_row(ui, "Textures Path:", &mut config_draft.textures_path);
-                self.add_number_row(ui, "Beat Sensitivity:", &mut config_draft.beat_sensitivity, 0.1, 10., 0.1);
-                self.add_number_row(ui, "Preset Duration:", &mut config_draft.preset_duration, 1., 60., 1.);
+                self.add_number_row(
+                    ui,
+                    "Beat Sensitivity:",
+                    &mut config_draft.beat_sensitivity,
+                    0.1,
+                    10.,
+                    0.1,
+                );
+                self.add_number_row(
+                    ui,
+                    "Preset Duration:",
+                    &mut config_draft.preset_duration,
+                    1.,
+                    60.,
+                    1.,
+                );
             });
         ui.add_space(8.0);
         ui.separator();
