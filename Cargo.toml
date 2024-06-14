@@ -36,7 +36,7 @@ toml = "0.8.14"
 
 [[bin]]
 name = "redrop"
-path = "src/main.rs"
+path = "src/redrop_app.rs"
 
 [[bin]]
 name = "redrop-player"
