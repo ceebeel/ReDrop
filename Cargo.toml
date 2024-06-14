@@ -1,8 +1,8 @@
 [package]
-name = "projectm_egui"
+name = "redrop"
 version = "0.1.0"
 edition = "2021"
-
+default-run = "redrop"
 
 [dependencies]
 libc = "*"
@@ -14,7 +14,10 @@ eframe = { version = "0.27.2", default-features = false, features = [
     "glow",
 ] }
 egui_extras = { version = "0.27.2", features = ["all_loaders"] }
-image = { version = "0.24", features = ["jpeg", "png"] } # The version needs to be same as the version used by `egui_extra`. (Not working with 0.25.x)
+image = { version = "0.24", features = [
+    "jpeg",
+    "png",
+] } # The version needs to be same as the version used by `egui_extra`. (Not working with 0.25.x)
 
 cpal = "0.15.3"
 log = "0.4"
@@ -36,5 +39,5 @@ name = "redrop"
 path = "src/main.rs"
 
 [[bin]]
-name = "redrop-renderer"
-path = "src/renderer.rs"
+name = "redrop-player"
+path = "src/player_app.rs"

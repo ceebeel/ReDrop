@@ -6,7 +6,8 @@ use std::sync::Arc;
 pub type ProjectMWrapped = Arc<ProjectM>;
 
 pub mod audio;
-pub mod config;
+// pub mod config;
+mod config;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     env_logger::init(); // Log to stderr (if you run with `RUST_LOG=debug`).
@@ -16,7 +17,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     config.save_to_file(&std::path::PathBuf::from("./config.toml"));
     let options = eframe::NativeOptions {
         viewport: egui::ViewportBuilder::default()
-            .with_title("ReDrop")
+            .with_title("ReDrop Player")
             .with_inner_size([config.window_width, config.window_height])
             .with_resizable(false),
         ..Default::default()
@@ -24,33 +25,33 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     eframe::run_native(
         "ReDrop",
         options,
-        Box::new(|_cc| Box::new(ReDropApp::new(config))),
+        Box::new(|_cc| Box::new(PlayerpApp::new(config))),
     )?;
     Ok(())
 }
 
-struct ReDropApp {
+struct PlayerpApp {
     project_m: ProjectMWrapped,
     config: config::Config,
     audio: audio::Audio,
     fullscreen: bool,
 }
 
-impl ReDropApp {
+impl PlayerpApp {
     fn new(config: config::Config) -> Self {
         let project_m = Arc::new(ProjectM::create());
         let audio = audio::Audio::new(Arc::clone(&project_m));
         // TODO: Option: Skip ProjetM default preset.
         project_m.load_preset_file("./presets/! Test/reactive.milk", false);
 
-        let mut redrop_app = ReDropApp {
+        let mut player_app = PlayerpApp {
             project_m,
             config,
             audio,
             fullscreen: false,
         };
-        redrop_app.init();
-        redrop_app
+        player_app.init();
+        player_app
     }
 
     fn init(&mut self) {
@@ -94,7 +95,7 @@ impl ReDropApp {
     }
 }
 
-impl eframe::App for ReDropApp {
+impl eframe::App for PlayerpApp {
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
         self.project_m.render_frame();
         ctx.request_repaint(); // TODO: Check if sync with frame rate
