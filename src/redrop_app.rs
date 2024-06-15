@@ -28,6 +28,7 @@ struct ReDropApp {
     config_draft: config::Config,
     show_config: bool,
     presets: preset::Presets,
+    player_app: Option<std::process::Child>,
 }
 
 impl ReDropApp {
@@ -37,7 +38,24 @@ impl ReDropApp {
         slf.config_draft = slf.config.clone();
         slf.presets
             .update_presets_lists_and_tree(Path::new(&slf.config.presets_path));
+
+        slf.run_player_app();
         slf
+    }
+
+    fn run_player_app(&mut self, ) {
+        self.player_app = Some(
+            std::process::Command::new(
+                std::env::current_exe()
+                    .unwrap()
+                    .parent()
+                    .unwrap()
+                    .join("redrop-player.exe"),
+            )
+            .spawn()
+            // TODO: Add IPC Channel Name argument
+            .unwrap(),
+        );
     }
 
     fn send_load_preset_request(&self, preset_id: usize) {
@@ -120,9 +138,29 @@ impl eframe::App for ReDropApp {
 
         // TODO: Add Scroll
         egui::TopBottomPanel::top("top_panel").show(ctx, |ui| {
-            if ui.button("Config").clicked() {
-                self.show_config = true;
-            }
+            ui.horizontal(|ui| {
+                if ui.button("Config").clicked() {
+                    self.show_config = true;
+                }
+                if ui.button("Kill").clicked() {
+                    if let Some(player_app) = &mut self.player_app {
+                        let _ = player_app.kill();
+                        // TODO: Don't kill it! Send a request to the player app to exit.
+                    }
+                }
+                if ui.button("Run").clicked() {
+                    if let Some(player_app) = &mut self.player_app {
+                        match player_app.try_wait() {
+                            Ok(Some(_)) => self.run_player_app(),
+                            Ok(None) => {
+                                let _ = player_app.kill();
+                                self.run_player_app();
+                            }
+                            Err(_) => todo!(),
+                        }
+                    }
+                }
+            })
         });
 
         egui::CentralPanel::default().show(ctx, |ui| {
