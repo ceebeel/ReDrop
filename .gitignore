@@ -18,3 +18,5 @@ Presets/*
 
 Textures/*
 !Textures/
+
+config.toml

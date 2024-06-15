@@ -1,7 +1,0 @@
-window_width = 800.0
-window_height = 600.0
-frame_rate = 60
-presets_path = "./presets"
-textures_path = "./textures"
-beat_sensitivity = 1.0
-preset_duration = 10.0
