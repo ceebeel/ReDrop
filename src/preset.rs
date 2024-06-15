@@ -1,28 +1,30 @@
-use std::{collections::BTreeMap, path::{Path, PathBuf}};
+use std::collections::BTreeMap;
+use std::fs;
+use std::path::{Path, PathBuf};
 
-struct Preset {
-    id: usize,
-    name: String,
-    path: PathBuf, // Mybe don't save it here // Save in server with (id, path)
-    img: Option<PathBuf>,
+pub struct Preset {
+    pub id: usize,
+    pub name: String,
+    pub path: PathBuf, //TODO: Change to Imutable Path ?!
+    pub img: Option<PathBuf>,
 }
 
-enum Node {
+pub enum Node {
     PresetId(usize),
     InnerNode(BTreeMap<String, Node>),
 }
 
-struct Presets {
-    lists: Vec<Preset>,
-    tree: BTreeMap<String, Node>,
+#[derive(Default)]
+pub struct Presets {
+    pub lists: Vec<Preset>,
+    pub tree: BTreeMap<String, Node>,
 }
 
 impl Presets {
-    fn new() -> Self {
-        Self {
-            lists: vec![],
-            tree: BTreeMap::new(),
-        }
+    pub fn update_presets_lists_and_tree(&mut self, path: &Path) {
+        self.lists.clear();
+        self.lists.clear();
+        self.tree = self.scan_presets(path);
     }
 
     fn scan_presets(&mut self, path: &Path) -> BTreeMap<String, Node> {
@@ -39,7 +41,7 @@ impl Presets {
             } else if path.extension().unwrap() == "milk" {
                 let name = path.file_stem().unwrap().to_string_lossy().into_owned();
                 let img = path.with_extension("jpg");
-                let preset_id = self.presets.len();
+                let preset_id = self.lists.len();
                 let preset = Preset {
                     id: preset_id,
                     name: name.clone(),
@@ -47,16 +49,9 @@ impl Presets {
                     img: if img.exists() { Some(img) } else { None },
                 };
                 node.insert(name, Node::PresetId(preset_id));
-                self.presets.push(preset);
+                self.lists.push(preset);
             }
         }
         node
-    }
-
-    fn update_presets_tree(&mut self) {
-        self.presets.clear();
-        self.presets_tree.clear();
-        // TODO: Take presets path from config
-        self.presets_tree = self.scan_presets(Path::new("Presets"));
     }
 }
