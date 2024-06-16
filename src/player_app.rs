@@ -1,19 +1,20 @@
-use config::Config;
 use eframe::egui;
-use projectm::core::ProjectM;
 
 use std::path::Path;
 use std::sync::Arc;
+
+use projectm::core::ProjectM;
 pub type ProjectMWrapped = Arc<ProjectM>;
 
-mod ipc_message;
 use crate::ipc_message::{IpcExchange, Message};
 use ipc_channel::ipc;
 use ipc_channel::ipc::IpcSender;
 
-pub mod audio;
-// pub mod config;
+use config::Config;
+
+mod audio;
 mod config;
+mod ipc_message;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     env_logger::init(); // Log to stderr (if you run with `RUST_LOG=debug`).
@@ -22,7 +23,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args: Vec<String> = std::env::args().collect();
     let sender = IpcSender::connect(args[1].clone()).unwrap();
     let (to_child, from_parent) = ipc::channel().unwrap();
-    let (to_parent, from_child) = ipc::channel().unwrap();
+    let (_, from_child) = ipc::channel().unwrap();
     sender
         .send(IpcExchange {
             sender: to_child,
