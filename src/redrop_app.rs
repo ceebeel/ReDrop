@@ -1,8 +1,13 @@
 use eframe::egui;
 use std::collections::BTreeMap;
 use std::path::{Path, PathBuf};
+ 
+use ipc_channel::ipc::IpcOneShotServer;
+use crate::ipc_message::{IpcExchange, Message};
 
 pub type FrameRate = u32;
+
+mod ipc_message;
 
 mod config;
 mod preset;
