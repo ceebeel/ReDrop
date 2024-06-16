@@ -1,8 +1,6 @@
-use std::path::PathBuf;
-
 use egui::Vec2;
-use serde::Deserialize;
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
+use std::path::PathBuf;
 
 pub type FrameRate = u32;
 
