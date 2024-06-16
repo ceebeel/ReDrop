@@ -1,14 +1,15 @@
+use std::path::{Path, PathBuf};
+
 use ipc_channel::ipc::{IpcReceiver, IpcSender};
 use serde::{Serialize, Deserialize};
 
 #[derive(Debug, Serialize, Deserialize)]
 pub enum Message {
-    ClientToServer {
-        message: String,
+    LoadPresetFile {
+        path: PathBuf,
+        smooth: bool,
     },
-    ServerToClient {
-        message: String,
-    }
+    
 }
 
 #[derive(Debug, Serialize, Deserialize)]
