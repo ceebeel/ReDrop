@@ -2,8 +2,14 @@ use config::Config;
 use eframe::egui;
 use projectm::core::ProjectM;
 
+use std::path::Path;
 use std::sync::Arc;
 pub type ProjectMWrapped = Arc<ProjectM>;
+
+mod ipc_message;
+use crate::ipc_message::{IpcExchange, Message};
+use ipc_channel::ipc;
+use ipc_channel::ipc::IpcSender;
 
 pub mod audio;
 // pub mod config;
@@ -11,10 +17,23 @@ mod config;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     env_logger::init(); // Log to stderr (if you run with `RUST_LOG=debug`).
+
+    // ipc-channel
+    let args: Vec<String> = std::env::args().collect();
+    let sender = IpcSender::connect(args[1].clone()).unwrap();
+    let (to_child, from_parent) = ipc::channel().unwrap();
+    let (to_parent, from_child) = ipc::channel().unwrap();
+    sender
+        .send(IpcExchange {
+            sender: to_child,
+            receiver: from_child,
+        })
+        .unwrap();
+
     // TODO: Put config in user home directory
     let config_path = std::path::PathBuf::from("./config.toml"); // "config.toml";
     let config = config::Config::load_from_file_or_default(&config_path);
-    config.save_to_file(&std::path::PathBuf::from("./config.toml"));
+    config.save_to_file(&std::path::PathBuf::from("./config.toml")); // TODO: Only save if not exists
     let options = eframe::NativeOptions {
         viewport: egui::ViewportBuilder::default()
             .with_title("ReDrop Player")
@@ -25,30 +44,34 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     eframe::run_native(
         "ReDrop",
         options,
-        Box::new(|_cc| Box::new(PlayerpApp::new(config))),
+        Box::new(|_cc| Box::new(PlayerApp::new(config, from_parent))),
     )?;
     Ok(())
 }
 
-struct PlayerpApp {
+struct PlayerApp {
     project_m: ProjectMWrapped,
     config: config::Config,
     audio: audio::Audio,
     fullscreen: bool,
+    ipc_from_parent: ipc_channel::ipc::IpcReceiver<Message>,
 }
 
-impl PlayerpApp {
-    fn new(config: config::Config) -> Self {
+impl PlayerApp {
+    fn new(
+        config: config::Config,
+        ipc_from_parent: ipc_channel::ipc::IpcReceiver<Message>,
+    ) -> Self {
         let project_m = Arc::new(ProjectM::create());
         let audio = audio::Audio::new(Arc::clone(&project_m));
-        // TODO: Option: Skip ProjetM default preset.
-        project_m.load_preset_file("./presets/! Test/reactive.milk", false);
+        // TODO: Option: Skip ProjectM default preset (load preset here before playing).
 
-        let mut player_app = PlayerpApp {
+        let mut player_app = PlayerApp {
             project_m,
             config,
             audio,
             fullscreen: false,
+            ipc_from_parent,
         };
         player_app.init();
         player_app
@@ -60,7 +83,7 @@ impl PlayerpApp {
         std::thread::spawn(move || audio.capture_audio()); // TODO : arg: frame rate
     }
 
-    // TODO: Zoom on viewport VS resize viewport (project_m)
+    // TODO: Zoom on viewport VS resize viewport (project_m) (maybe ctx.zoom_factor ?!)
     fn toggle_fullscreen(&mut self, ctx: &egui::Context) {
         if self.fullscreen {
             ctx.send_viewport_cmd(egui::viewport::ViewportCommand::Fullscreen(false));
@@ -81,7 +104,7 @@ impl PlayerpApp {
             self.fullscreen = true;
         }
     }
-    
+
     pub fn load_config(&self, config: &Config) {
         let project_m = &self.project_m;
 
@@ -91,20 +114,39 @@ impl PlayerpApp {
         project_m.set_texture_search_paths(&paths, 1);
         project_m.set_beat_sensitivity(config.beat_sensitivity);
         project_m.set_preset_duration(config.preset_duration);
+    }
 
+    fn load_preset_file(&self, ctx: &egui::Context, path: &Path, smooth: bool) {
+        // project_m.load_preset_file does not work fine with special characters like spaces...
+        let name = "ReDrop: ".to_string() + path.file_stem().unwrap().to_string_lossy().as_ref();
+        ctx.send_viewport_cmd(egui::ViewportCommand::Title(name));
+        let data = std::fs::read_to_string(path).unwrap();
+        self.project_m.load_preset_data(&data, smooth);
+    }
+
+    fn check_for_ipc_message(&self, ctx: &egui::Context) {
+        if let Ok(message) = self.ipc_from_parent.try_recv() {
+            match message {
+                Message::LoadPresetFile { path, smooth } => {
+                    self.load_preset_file(ctx, &path, smooth)
+                }
+            }
+        }
     }
 }
 
-impl eframe::App for PlayerpApp {
+impl eframe::App for PlayerApp {
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
+        self.check_for_ipc_message(ctx); // TODO: Fix: Lag (small) on load_preset_file with large files
+
         self.project_m.render_frame();
         ctx.request_repaint(); // TODO: Check if sync with frame rate
 
         if ctx.input(|i| i.key_pressed(egui::Key::F)) {
             self.toggle_fullscreen(ctx);
         }
+        // TODO: Split toggle_fullscreen into two functions and add egui::Key::ESCAPE to set_fullscreen(false)
     }
-
     fn on_exit(&mut self, _gl: Option<&eframe::glow::Context>) {
         self.audio.is_capturing = false;
     }
