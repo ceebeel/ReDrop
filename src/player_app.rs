@@ -141,7 +141,9 @@ impl PlayerApp {
     }
 
     fn send_random_preset_request(&self) {
-        self.ipc_to_parent.send(Message::RandomPresetRequest).unwrap();
+        self.ipc_to_parent
+            .send(Message::RandomPresetRequest)
+            .unwrap();
     }
 }
 
