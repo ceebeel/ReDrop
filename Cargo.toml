@@ -36,13 +36,9 @@ ipc-channel = "0.18.1"
 # opt-level = 2
 
 [[bin]]
-name = "redrop-player"
-path = "src/player_app.rs"
-
-[[bin]]
 name = "redrop"
 path = "src/redrop_app.rs"
 
-
-
-
+[[bin]]
+name = "redrop-player"
+path = "src/player_app.rs"
