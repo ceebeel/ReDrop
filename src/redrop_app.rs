@@ -1,16 +1,16 @@
 use eframe::egui;
+
 use std::collections::BTreeMap;
 use std::path::{Path, PathBuf};
 
 use crate::ipc_message::{IpcExchange, Message};
 use ipc_channel::ipc::IpcOneShotServer;
 
-pub type FrameRate = u32;
-
-mod ipc_message;
-
 mod config;
+mod ipc_message;
 mod preset;
+
+// pub type FrameRate = u32;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     env_logger::init();
@@ -23,7 +23,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             Box::new(ReDropApp::new())
         }),
     )?;
-
     Ok(())
 }
 
@@ -47,11 +46,9 @@ impl ReDropApp {
 
         let (ipc_server, server_name) = IpcOneShotServer::<IpcExchange>::new().unwrap();
 
-        slf.run_player_app(server_name.clone());
+        slf.run_player_app(server_name);
 
-        println!("Server name: {:#?}", server_name);
-        let (_, IpcExchange { sender, receiver }) = ipc_server.accept().unwrap();
-        println!("Sender: {:#?}", sender);
+        let (_, IpcExchange { sender, receiver: _ }) = ipc_server.accept().unwrap();
         slf.ipc_to_child = Some(sender);
 
         slf
@@ -170,7 +167,7 @@ impl eframe::App for ReDropApp {
                     }
                 }
                 if ui.button("Run").clicked() {
-                    if let Some(player_app) = &mut self.player_app {
+                    if let Some(_player_app) = &mut self.player_app {
                         // match player_app.try_wait() {
                         //     Ok(Some(_)) => self.run_player_app(),
                         //     Ok(None) => {
