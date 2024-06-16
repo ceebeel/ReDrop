@@ -1,7 +1,5 @@
-use cpal::{
-    traits::{DeviceTrait, HostTrait, StreamTrait},
-    BufferSize, StreamConfig,
-};
+use cpal::traits::{DeviceTrait, HostTrait, StreamTrait};
+use cpal::{BufferSize, StreamConfig};
 
 use super::ProjectMWrapped;
 
