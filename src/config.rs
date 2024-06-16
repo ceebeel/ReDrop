@@ -23,8 +23,8 @@ impl Default for Config {
             window_width: 800.,
             window_height: 600.,
             frame_rate: 60,
-            presets_path: "./presets".to_string(),
-            textures_path: "./textures".to_string(),
+            presets_path: "Presets".to_string(),
+            textures_path: "Textures".to_string(),
             beat_sensitivity: 1.,
             preset_duration: 10.,
         }
