@@ -1,9 +1,9 @@
 use eframe::egui;
 use std::collections::BTreeMap;
 use std::path::{Path, PathBuf};
- 
-use ipc_channel::ipc::IpcOneShotServer;
+
 use crate::ipc_message::{IpcExchange, Message};
+use ipc_channel::ipc::IpcOneShotServer;
 
 pub type FrameRate = u32;
 
@@ -34,6 +34,7 @@ struct ReDropApp {
     show_config: bool,
     presets: preset::Presets,
     player_app: Option<std::process::Child>,
+    ipc_to_child: Option<ipc_channel::ipc::IpcSender<Message>>,
 }
 
 impl ReDropApp {
@@ -44,11 +45,19 @@ impl ReDropApp {
         slf.presets
             .update_presets_lists_and_tree(Path::new(&slf.config.presets_path));
 
-        slf.run_player_app();
+        let (ipc_server, server_name) = IpcOneShotServer::<IpcExchange>::new().unwrap();
+
+        slf.run_player_app(server_name.clone());
+
+        println!("Server name: {:#?}", server_name);
+        let (_, IpcExchange { sender, receiver }) = ipc_server.accept().unwrap();
+        println!("Sender: {:#?}", sender);
+        slf.ipc_to_child = Some(sender);
+
         slf
     }
 
-    fn run_player_app(&mut self, ) {
+    fn run_player_app(&mut self, server_name: String) {
         self.player_app = Some(
             std::process::Command::new(
                 std::env::current_exe()
@@ -57,14 +66,21 @@ impl ReDropApp {
                     .unwrap()
                     .join("redrop-player.exe"),
             )
+            .arg(server_name)
             .spawn()
-            // TODO: Add IPC Channel Name argument
             .unwrap(),
         );
     }
 
     fn send_load_preset_request(&self, preset_id: usize) {
-        println!("Load preset: {:#?}", preset_id);
+        self.ipc_to_child
+            .as_ref()
+            .unwrap()
+            .send(Message::LoadPresetFile {
+                path: self.presets.lists[preset_id].path.clone(),
+                smooth: true,
+            })
+            .unwrap();
     }
 
     // UI
@@ -155,14 +171,14 @@ impl eframe::App for ReDropApp {
                 }
                 if ui.button("Run").clicked() {
                     if let Some(player_app) = &mut self.player_app {
-                        match player_app.try_wait() {
-                            Ok(Some(_)) => self.run_player_app(),
-                            Ok(None) => {
-                                let _ = player_app.kill();
-                                self.run_player_app();
-                            }
-                            Err(_) => todo!(),
-                        }
+                        // match player_app.try_wait() {
+                        //     Ok(Some(_)) => self.run_player_app(),
+                        //     Ok(None) => {
+                        //         let _ = player_app.kill();
+                        //         self.run_player_app(); // TODO: Fix: server_name in ReDropApp or PlayerApp (new struct) !?
+                        //     }
+                        //     Err(_) => todo!(),
+                        // }
                     }
                 }
             })
