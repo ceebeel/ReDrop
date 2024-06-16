@@ -23,7 +23,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args: Vec<String> = std::env::args().collect();
     let sender = IpcSender::connect(args[1].clone()).unwrap();
     let (to_child, from_parent) = ipc::channel().unwrap();
-    let (_, from_child) = ipc::channel().unwrap();
+    let (to_parent, from_child) = ipc::channel().unwrap();
     sender
         .send(IpcExchange {
             sender: to_child,
@@ -45,7 +45,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     eframe::run_native(
         "ReDrop",
         options,
-        Box::new(|_cc| Box::new(PlayerApp::new(config, from_parent))),
+        Box::new(|_cc| Box::new(PlayerApp::new(config, from_parent, to_parent))),
     )?;
     Ok(())
 }
@@ -56,12 +56,14 @@ struct PlayerApp {
     audio: audio::Audio,
     fullscreen: bool,
     ipc_from_parent: ipc_channel::ipc::IpcReceiver<Message>,
+    ipc_to_parent: ipc_channel::ipc::IpcSender<Message>,
 }
 
 impl PlayerApp {
     fn new(
         config: config::Config,
         ipc_from_parent: ipc_channel::ipc::IpcReceiver<Message>,
+        ipc_to_parent: ipc_channel::ipc::IpcSender<Message>,
     ) -> Self {
         let project_m = Arc::new(ProjectM::create());
         let audio = audio::Audio::new(Arc::clone(&project_m));
@@ -73,6 +75,7 @@ impl PlayerApp {
             audio,
             fullscreen: false,
             ipc_from_parent,
+            ipc_to_parent,
         };
         player_app.init();
         player_app
@@ -125,14 +128,20 @@ impl PlayerApp {
         self.project_m.load_preset_data(&data, smooth);
     }
 
+    // ipc-channel
     fn check_for_ipc_message(&self, ctx: &egui::Context) {
         if let Ok(message) = self.ipc_from_parent.try_recv() {
             match message {
                 Message::LoadPresetFile { path, smooth } => {
                     self.load_preset_file(ctx, &path, smooth)
                 }
+                Message::RandomPresetRequest => todo!(),
             }
         }
+    }
+
+    fn send_random_preset_request(&self) {
+        self.ipc_to_parent.send(Message::RandomPresetRequest).unwrap();
     }
 }
 
@@ -147,6 +156,10 @@ impl eframe::App for PlayerApp {
             self.toggle_fullscreen(ctx);
         }
         // TODO: Split toggle_fullscreen into two functions and add egui::Key::ESCAPE to set_fullscreen(false)
+
+        if ctx.input(|i| i.key_pressed(egui::Key::R)) {
+            self.send_random_preset_request();
+        }
     }
     fn on_exit(&mut self, _gl: Option<&eframe::glow::Context>) {
         self.audio.is_capturing = false;

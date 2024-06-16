@@ -34,6 +34,7 @@ struct ReDropApp {
     presets: preset::Presets,
     player_app: Option<std::process::Child>,
     ipc_to_child: Option<ipc_channel::ipc::IpcSender<Message>>,
+    ipc_from_child: Option<ipc_channel::ipc::IpcReceiver<Message>>,
 }
 
 impl ReDropApp {
@@ -48,8 +49,9 @@ impl ReDropApp {
 
         slf.run_player_app(server_name);
 
-        let (_, IpcExchange { sender, receiver: _ }) = ipc_server.accept().unwrap();
+        let (_, IpcExchange { sender, receiver }) = ipc_server.accept().unwrap();
         slf.ipc_to_child = Some(sender);
+        slf.ipc_from_child = Some(receiver);
 
         slf
     }
@@ -69,7 +71,28 @@ impl ReDropApp {
         );
     }
 
-    fn send_load_preset_request(&self, preset_id: usize) {
+    // ipc-channel
+    fn check_for_ipc_message(&mut self) {
+        if let Some(ipc_from_child) = &mut self.ipc_from_child {
+            if let Ok(message) = ipc_from_child.try_recv() {
+                match message {
+                    Message::RandomPresetRequest => {
+                        self.send_random_preset_file();
+                    }
+                    Message::LoadPresetFile { path, smooth } => {
+                        todo!()
+                    }
+                }
+            }
+        }
+    }
+
+    fn send_random_preset_file(&mut self) {
+        let preset_id = rand::Rng::gen_range(&mut rand::thread_rng(), 0..self.presets.lists.len());
+        self.send_load_preset_file(preset_id);
+    }
+
+    fn send_load_preset_file(&self, preset_id: usize) {
         self.ipc_to_child
             .as_ref()
             .unwrap()
@@ -101,12 +124,11 @@ impl ReDropApp {
                         ui.add(image_hovered);
                     });
             }
-
             if response.clicked() {
-                self.send_load_preset_request(preset.id)
+                self.send_load_preset_file(preset.id)
             }
         } else if ui.button(&preset.name).clicked() {
-            self.send_load_preset_request(preset.id)
+            self.send_load_preset_file(preset.id)
             // TODO: Button must be square
             // TODO: Idea: Create preview image on Right Click
         }
@@ -150,6 +172,11 @@ impl ReDropApp {
 
 impl eframe::App for ReDropApp {
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
+        self.check_for_ipc_message();
+        ctx.request_repaint();
+        std::thread::sleep(std::time::Duration::from_millis(10));
+        // TODO: Spawn check_for_ipc_message in a thread (for not refresh ui all)
+
         if self.show_config {
             self.show_config(ctx);
         }
