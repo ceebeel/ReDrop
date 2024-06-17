@@ -32,6 +32,7 @@ struct ReDropApp {
     config_draft: config::Config,
     show_config: bool,
     presets: preset::Presets,
+    smooth: bool,
     player_app: Option<std::process::Child>,
     ipc_to_child: Option<ipc_channel::ipc::IpcSender<Message>>,
     ipc_from_child: Option<ipc_channel::ipc::IpcReceiver<Message>>,
@@ -89,16 +90,16 @@ impl ReDropApp {
 
     fn send_random_preset_file(&mut self) {
         let preset_id = rand::Rng::gen_range(&mut rand::thread_rng(), 0..self.presets.lists.len());
-        self.send_load_preset_file(preset_id);
+        self.send_load_preset_file(preset_id, self.smooth);
     }
 
-    fn send_load_preset_file(&self, preset_id: usize) {
+    fn send_load_preset_file(&self, preset_id: usize, smooth: bool) {
         self.ipc_to_child
             .as_ref()
             .unwrap()
             .send(Message::LoadPresetFile {
                 path: self.presets.lists[preset_id].path.clone(),
-                smooth: true,
+                smooth, 
             })
             .unwrap();
     }
@@ -125,10 +126,10 @@ impl ReDropApp {
                     });
             }
             if response.clicked() {
-                self.send_load_preset_file(preset.id)
+                self.send_load_preset_file(preset.id, self.smooth)
             }
         } else if ui.button(&preset.name).clicked() {
-            self.send_load_preset_file(preset.id)
+            self.send_load_preset_file(preset.id, self.smooth)
             // TODO: Button must be square
             // TODO: Idea: Create preview image on Right Click
         }
@@ -205,6 +206,7 @@ impl eframe::App for ReDropApp {
                         // }
                     }
                 }
+                ui.checkbox(&mut self.smooth, "Smooth");
             })
         });
 
