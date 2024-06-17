@@ -26,6 +26,7 @@ impl Audio {
         }
     }
 
+    // TODO: https://github.com/aizcutei/ruhear - capture system output audio
     pub fn capture_audio(&self) {
         let mut config: StreamConfig = self.device.default_input_config().unwrap().into();
         // TODO: Calculate correct buffer size with frame rate (fps)
@@ -46,6 +47,7 @@ impl Audio {
                 &config,
                 move |data: &[f32], _: &_| {
                     project_m.pcm_add_float(data.to_vec(), 2);
+                    // TODO: Check if pcm is [l,r,l,r] !? https://www.reddit.com/r/rust/comments/s0d65g/cpal_capturing_single_channel_out_of_2_channels/
                 },
                 err_fn,
                 None,
