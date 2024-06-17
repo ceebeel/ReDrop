@@ -36,6 +36,8 @@ struct ReDropApp {
     player_app: Option<std::process::Child>,
     ipc_to_child: Option<ipc_channel::ipc::IpcSender<Message>>,
     ipc_from_child: Option<ipc_channel::ipc::IpcReceiver<Message>>,
+
+    timer: Option<std::time::Instant>,
 }
 
 impl ReDropApp {
@@ -53,6 +55,8 @@ impl ReDropApp {
         let (_, IpcExchange { sender, receiver }) = ipc_server.accept().unwrap();
         slf.ipc_to_child = Some(sender);
         slf.ipc_from_child = Some(receiver);
+
+        slf.timer = Some(std::time::Instant::now());
 
         slf
     }
@@ -99,7 +103,7 @@ impl ReDropApp {
             .unwrap()
             .send(Message::LoadPresetFile {
                 path: self.presets.lists[preset_id].path.clone(),
-                smooth, 
+                smooth,
             })
             .unwrap();
     }
@@ -173,6 +177,12 @@ impl ReDropApp {
 
 impl eframe::App for ReDropApp {
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
+        // timer = 60 sec
+        if std::time::Instant::now() - self.timer.unwrap() >= std::time::Duration::from_secs(24) {
+            self.timer = Some(std::time::Instant::now());
+            self.send_random_preset_file();
+        }
+
         self.check_for_ipc_message();
         ctx.request_repaint();
         std::thread::sleep(std::time::Duration::from_millis(10));
