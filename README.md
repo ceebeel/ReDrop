@@ -7,29 +7,32 @@ ProjectM (Milkdrop) Music Visualization in Rust.
 ### ReDrop App
 
 - [ ] Add Scroll Area
-- [ ] Config View:
-  - [ ] Save
-  - [ ] Reload
-  - [ ] Reset (Default)
-  - [ ] `open` File explorer
 - [ ] Show preset without image in square Button (like img)
 - [ ] Show presets in a Grid Layout (Responsive)
 - [ ] Change preset time interval on nBar (4 beat)  
   160 bpm, 32 bar -> 48s [4 / ( (160 / 60) ) * 32]
 - [ ] Set Window default size (persistence !?)
 
+- [ ] Config View:
+  - [ ] Save
+  - [ ] Reload
+  - [ ] Reset (Default)
+  - [ ] `open` File explorer
+  - [ ] Shortcut table UI
+
 ### Player App
 
 - [X] Set switch preset request Callback
-- [ ] Set preset error Callback
-- [ ] Window Title = ReDrop - { fps } fps - { preset_name }
-- [ ] Hide cursor on fullscreen
-- [ ] Toggle fullscreen on Double Click
-- [ ] Disable fullscreen on ESCAPE
 - [ ] Calculate & Sync FPS  
   <https://github.com/emilk/egui/issues/1109>  
   <https://github.com/emilk/egui/discussions/342>  
   <https://docs.rs/egui/latest/egui/util/struct.History.html>
+- [ ] Window Title = ReDrop - { fps } fps - { preset_name }
+- [ ] Disable fullscreen on ESCAPE -> (Config -> Shortcut)
+- [ ] Hide cursor on fullscreen
+- [ ] Toggle fullscreen on Double Click
+- [ ] Set preset error Callback
+  
 - [ ] Add projectm_opengl_render_frame_fbo to crate projectM and test it.  
   <https://github.com/projectM-visualizer/projectm/blob/master/src/api/include/projectM-4/render_opengl.h>
 - [ ] Add touch (waveform)
