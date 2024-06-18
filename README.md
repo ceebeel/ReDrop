@@ -27,18 +27,18 @@ ProjectM (Milkdrop) Music Visualization in Rust.
 - [ ] Toggle fullscreen on Double Click
 - [ ] Disable fullscreen on ESCAPE
 - [ ] Calculate & Sync FPS  
-  > <https://github.com/emilk/egui/issues/1109>  
-  > <https://github.com/emilk/egui/discussions/342>  
-  > <https://docs.rs/egui/latest/egui/util/struct.History.html>
+  <https://github.com/emilk/egui/issues/1109>  
+  <https://github.com/emilk/egui/discussions/342>  
+  <https://docs.rs/egui/latest/egui/util/struct.History.html>
 - [ ] Add projectm_opengl_render_frame_fbo to crate projectM and test it.  
-  > <https://github.com/projectM-visualizer/projectm/blob/master/src/api/include/projectM-4/render_opengl.h>
+  <https://github.com/projectM-visualizer/projectm/blob/master/src/api/include/projectM-4/render_opengl.h>
 - [ ] Add touch (waveform)
 
 ### Config
 
 - [ ] Add mesh size (32..512)
 - [ ] Check for hard and soft cut, preset_locked  
-  > <https://github.com/projectM-visualizer/projectm/blob/master/src/api/include/projectM-4/parameters.h>
+  <https://github.com/projectM-visualizer/projectm/blob/master/src/api/include/projectM-4/parameters.h>
 - [ ] Shortcut:
   - [ ] Toggle Fullscreen (F, Double Click)
   - [ ] Disable Fullscreen (ESCAPE)
@@ -58,12 +58,12 @@ ProjectM (Milkdrop) Music Visualization in Rust.
 ### Audio
 
 - [ ] Check audio stereo format: cpal vs projectm (pcm), [l,r,l,r,..] or [l,l,..,r,r,..] ?!
-  > <https://www.reddit.com/r/rust/comments/s0d65g/cpal_capturing_single_channel_out_of_2_channels/>
+  <https://www.reddit.com/r/rust/comments/s0d65g/cpal_capturing_single_channel_out_of_2_channels/>
 - [ ] List Audio Devices
 - [ ] Audio Buffer Size
 - [ ] Calculate audio buffer size with frame rate (fps) (48000hz / 60 fps = 800)
-- [ ] Capture system Audio Output
-  > <https://github.com/aizcutei/ruhear>
+- [ ] Capture system Audio Output  
+  <https://github.com/aizcutei/ruhear>
 
 ### Video
 
@@ -75,6 +75,16 @@ ProjectM (Milkdrop) Music Visualization in Rust.
 
 - [ ] SetBeatSensitivity { value: f64 }
 - [ ] SetBeatDuration { value: f32 }
+
+## Future ideas
+
+- Playlist
+- Deck (Muliple Output)
+- Timeline edition
+- Ableton Link (Sync BPM with applications like Ableton Live, Bitwig Studio, NI Tracktor, and more.)  
+  <https://github.com/projectM-visualizer/projectm/issues/451>
+- Spout (Send output to applications like Resolume, Max, Processing, MadMapper, TouchDesigner and more.)  
+  <https://spout.zeal.co/>
 
 ## Known bugs
 
