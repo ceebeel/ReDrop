@@ -47,6 +47,7 @@
 
 - [ ] List Audio Devices
 - [ ] Audio Buffer Size
+- [ ] Calculate audio buffer size with frame rate (fps) (48000hz / 60 fps = 800)
 
 ### Video
 

@@ -32,7 +32,7 @@ impl Audio {
         // TODO: Calculate correct buffer size with frame rate (fps)
         // TODO: Fix alsa sample rate (only odd numbers are supported)
 
-        config.buffer_size = BufferSize::Fixed(800);
+        config.buffer_size = BufferSize::Fixed(800); // 48000hz / 60 fps = 800
         println!("Config: {:?}", config);
 
         let err_fn = |err: cpal::StreamError| {
