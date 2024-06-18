@@ -12,7 +12,7 @@ pub struct Config {
     pub presets_path: String,  // Default: ./presets
     pub textures_path: String, // Default: ./textures
     pub beat_sensitivity: f32, // Default: 1.0
-    pub preset_duration: f64,  // Default: ? (in seconds)
+    pub preset_duration: f64,  // Default: 60 (in seconds)
 }
 
 impl Default for Config {
@@ -24,7 +24,7 @@ impl Default for Config {
             presets_path: "Presets".to_string(),
             textures_path: "Textures".to_string(),
             beat_sensitivity: 1.,
-            preset_duration: 60.,
+            preset_duration: 5., // TODO: Restore to default (60)
         }
     }
 }
