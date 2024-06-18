@@ -36,8 +36,6 @@ struct ReDropApp {
     player_app: Option<std::process::Child>,
     ipc_to_child: Option<ipc_channel::ipc::IpcSender<Message>>,
     ipc_from_child: Option<ipc_channel::ipc::IpcReceiver<Message>>,
-
-    timer: Option<std::time::Instant>,
 }
 
 impl ReDropApp {
@@ -56,7 +54,7 @@ impl ReDropApp {
         slf.ipc_to_child = Some(sender);
         slf.ipc_from_child = Some(receiver);
 
-        slf.timer = Some(std::time::Instant::now());
+        // slf.timer = Some(std::time::Instant::now());
 
         slf
     }
@@ -84,8 +82,11 @@ impl ReDropApp {
                     Message::RandomPresetRequest => {
                         self.send_random_preset_file();
                     }
-                    Message::LoadPresetFile { path, smooth } => {
-                        todo!()
+                    Message::SwitchPresetRequest { smooth } => {
+                        self.send_switch_preset_request(smooth);
+                    }
+                    other_message => {
+                        panic!("Unhandled message: {:?}", other_message);
                     }
                 }
             }
@@ -93,8 +94,13 @@ impl ReDropApp {
     }
 
     fn send_random_preset_file(&mut self) {
-        let preset_id = rand::Rng::gen_range(&mut rand::thread_rng(), 0..self.presets.lists.len());
+        let preset_id = rand::Rng::gen_range(&mut rand::thread_rng(), 0..self.presets.lists.len()); // TODO: Import rand::rng for simplifying the code
         self.send_load_preset_file(preset_id, self.smooth);
+    }
+
+    fn send_switch_preset_request(&self, smooth: bool) {
+        let preset_id = rand::Rng::gen_range(&mut rand::thread_rng(), 0..self.presets.lists.len()); // TODO: Import rand::rng for simplifying the code
+        self.send_load_preset_file(preset_id, smooth);
     }
 
     fn send_load_preset_file(&self, preset_id: usize, smooth: bool) {
@@ -177,12 +183,6 @@ impl ReDropApp {
 
 impl eframe::App for ReDropApp {
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
-        // timer = 60 sec
-        if std::time::Instant::now() - self.timer.unwrap() >= std::time::Duration::from_secs(24) {
-            self.timer = Some(std::time::Instant::now());
-            self.send_random_preset_file();
-        }
-
         self.check_for_ipc_message();
         ctx.request_repaint();
         std::thread::sleep(std::time::Duration::from_millis(10));
@@ -221,7 +221,7 @@ impl eframe::App for ReDropApp {
         });
 
         egui::CentralPanel::default().show(ctx, |ui| {
-            self.show_presets_tree(ui, &self.presets.tree); // TODO: Move presets_tree in the fn/
+            self.show_presets_tree(ui, &self.presets.tree); // TODO: Move presets_tree in the fn
         });
     }
 }

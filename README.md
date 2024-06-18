@@ -20,7 +20,7 @@ ProjectM (Milkdrop) Music Visualization in Rust.
 
 ### Player App
 
-- [ ] Set change preset request Callback
+- [X] Set switch preset request Callback
 - [ ] Set preset error Callback
 - [ ] Window Title = ReDrop - { fps } fps - { preset_name }
 - [ ] Hide cursor on fullscreen

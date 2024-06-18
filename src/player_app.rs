@@ -83,8 +83,20 @@ impl PlayerApp {
 
     fn init(&mut self) {
         self.load_config(&self.config);
+        self.set_preset_swithch_request_callback();
         let audio = self.audio.clone();
         std::thread::spawn(move || audio.capture_audio()); // TODO : arg: frame rate
+    }
+
+    // ProjecM Callbacks
+    fn set_preset_swithch_request_callback(&mut self) {
+        let ipc_to_parent = self.ipc_to_parent.clone();
+        self.project_m
+            .set_preset_switch_requested_event_callback(move |cut| {
+                ipc_to_parent
+                    .send(Message::SwitchPresetRequest { smooth: cut })
+                    .unwrap();
+            });
     }
 
     // TODO: Zoom on viewport VS resize viewport (project_m) (maybe ctx.zoom_factor ?!)
@@ -135,7 +147,9 @@ impl PlayerApp {
                 Message::LoadPresetFile { path, smooth } => {
                     self.load_preset_file(ctx, &path, smooth)
                 }
-                Message::RandomPresetRequest => todo!(),
+                other_message => {
+                    panic!("Unhandled message: {:?}", other_message);
+                }
             }
         }
     }

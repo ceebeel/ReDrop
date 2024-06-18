@@ -5,7 +5,8 @@ use std::path::PathBuf;
 #[derive(Debug, Serialize, Deserialize)]
 pub enum Message {
     LoadPresetFile { path: PathBuf, smooth: bool },
-    RandomPresetRequest, // -> LoadPresetFile
+    RandomPresetRequest,                  // -> LoadPresetFile
+    SwitchPresetRequest { smooth: bool }, // -> LoadPresetFile
 }
 
 #[derive(Debug, Serialize, Deserialize)]
