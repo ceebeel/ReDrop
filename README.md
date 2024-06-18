@@ -10,16 +10,17 @@
   - [ ] Save
   - [ ] Reload
   - [ ] Reset (Default)
-- [ ] Show presets in a Grid Layout (Responsive)
+  - [ ] `open` File explorer
 - [ ] Show preset without image in Square Button (like img)
+- [ ] Show presets in a Grid Layout (Responsive)
 - [ ] Change preset time interval on nBar (4 beat)
   - 160 bpm, 32 bar -> 48s [4 / ( (160 / 60) ) * 32]
 - [ ] Fix: The app doesn't receive IPC messages if the window is minimized on taskbar (not rendered)!
 
 ### Player App
 
-- [ ] Set preset error Callback
 - [ ] Set change preset request Callback
+- [ ] Set preset error Callback
 - [ ] Window Title = ReDrop - { fps } fps - { preset_name }
 - [ ] Hide cursor on fullscreen
 - [ ] Toggle fullscreen on Double Click
@@ -48,6 +49,7 @@
 - [ ] List Audio Devices
 - [ ] Audio Buffer Size
 - [ ] Calculate audio buffer size with frame rate (fps) (48000hz / 60 fps = 800)
+- [ ] Capture system Audio Output
 
 ### Video
 
