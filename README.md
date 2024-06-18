@@ -14,8 +14,8 @@ ProjectM (Milkdrop) Music Visualization in Rust.
   - [ ] `open` File explorer
 - [ ] Show preset without image in square Button (like img)
 - [ ] Show presets in a Grid Layout (Responsive)
-- [ ] Change preset time interval on nBar (4 beat)
-  - 160 bpm, 32 bar -> 48s [4 / ( (160 / 60) ) * 32]
+- [ ] Change preset time interval on nBar (4 beat)  
+  160 bpm, 32 bar -> 48s [4 / ( (160 / 60) ) * 32]
 - [ ] Set Window default size (persistence !?)
 
 ### Player App
