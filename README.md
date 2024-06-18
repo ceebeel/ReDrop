@@ -1,11 +1,12 @@
 # ReDrop
 
- ProjectM (Milkdrop) Music Visualization in Rust.
+ProjectM (Milkdrop) Music Visualization in Rust.
 
 ## TODO
 
 ### ReDrop App
 
+- [ ] Add Scroll Area
 - [ ] Config View:
   - [ ] Save
   - [ ] Reload
@@ -15,7 +16,7 @@
 - [ ] Show presets in a Grid Layout (Responsive)
 - [ ] Change preset time interval on nBar (4 beat)
   - 160 bpm, 32 bar -> 48s [4 / ( (160 / 60) ) * 32]
-- [ ] Fix: The app doesn't receive IPC messages if the window is minimized on taskbar (not rendered)!
+- [ ] Set Window default size (persistence !?)
 
 ### Player App
 
@@ -24,19 +25,20 @@
 - [ ] Window Title = ReDrop - { fps } fps - { preset_name }
 - [ ] Hide cursor on fullscreen
 - [ ] Toggle fullscreen on Double Click
-- [ ] Calculate & Sync FPS
-  - <https://github.com/emilk/egui/issues/1109>
-  - <https://github.com/emilk/egui/discussions/342>
-  - <https://docs.rs/egui/latest/egui/util/struct.History.html>
-- [ ] Add projectm_opengl_render_frame_fbo to crate projectM and test it:
-  - <https://github.com/projectM-visualizer/projectm/blob/master/src/api/include/projectM-4/render_opengl.h>
+- [ ] Disable fullscreen on ESCAPE
+- [ ] Calculate & Sync FPS  
+  > <https://github.com/emilk/egui/issues/1109>  
+  > <https://github.com/emilk/egui/discussions/342>  
+  > <https://docs.rs/egui/latest/egui/util/struct.History.html>
+- [ ] Add projectm_opengl_render_frame_fbo to crate projectM and test it:  
+  > <https://github.com/projectM-visualizer/projectm/blob/master/src/api/include/projectM-4/render_opengl.h>
 - [ ] Add touch (waveform)
 
 ### Config
 
 - [ ] Add mesh size (32..512)
-- [ ] Check for hard and soft cut, preset_locked
-  - <https://github.com/projectM-visualizer/projectm/blob/master/src/api/include/projectM-4/parameters.h>
+- [ ] Check for hard and soft cut, preset_locked  
+  > <https://github.com/projectM-visualizer/projectm/blob/master/src/api/include/projectM-4/parameters.h>
 
 ### Preset
 
@@ -61,3 +63,12 @@
 
 - [ ] SetBeatSensitivity { value: f64 }
 - [ ] SetBeatDuration { value: f32 }
+
+## Known bugs
+
+- [ ] ReDrop App doesn't receive IPC messages if the window is minimized on taskbar (not rendered)!
+- [ ] Player App sometimes crashes:
+  > thread 'main' panicked at \.cargo\registry\src\index.crates.io-6f17d22bba15001f\projectm-2.0.1-alpha\src\core.rs:725:13:  
+  > Failed to borrow instance
+- [ ] Both App crash on `ipc_check` if one app (window) is closed (icp_channel: err, closed channel).  
+  And can't find the channel name if the application is subsequently reopened. (New channel is created).
