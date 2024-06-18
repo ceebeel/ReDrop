@@ -24,7 +24,7 @@ impl Default for Config {
             presets_path: "Presets".to_string(),
             textures_path: "Textures".to_string(),
             beat_sensitivity: 1.,
-            preset_duration: 10.,
+            preset_duration: 60.,
         }
     }
 }
