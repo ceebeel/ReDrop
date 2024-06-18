@@ -84,7 +84,7 @@ ProjectM (Milkdrop) Music Visualization in Rust.
 - [ ] Player App sometimes crashes:
   > thread 'main' panicked at \.cargo\registry\src\index.crates.io-6f17d22bba15001f\projectm-2.0.1-alpha\src\core.rs:725:13:  
   > Failed to borrow instance
-- [ ] Player App crash at load_preset_file (let data):  
+- [ ] Player App crash at load_preset_file (let data) (only one time at the moment):  
   > thread 'main' panicked at src/player_app.rs:216:50:
   > called `Result::unwrap()` on an `Err` value: Error { kind: InvalidData, message: "stream did not contain valid UTF-8" }
   > note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
