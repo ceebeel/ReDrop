@@ -147,6 +147,10 @@ impl PlayerApp {
                 Message::LoadPresetFile { path, smooth } => {
                     self.load_preset_file(ctx, &path, smooth)
                 }
+                Message::SetPresetDuration(duration) => {
+                    println!("SetPresetDuration: {}", duration); // TODO: Remove this if fixed: too many request (Don't send request before release drag)
+                    self.project_m.set_preset_duration(duration);
+                }
                 other_message => {
                     panic!("Unhandled message: {:?}", other_message);
                 }

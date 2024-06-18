@@ -217,6 +217,20 @@ impl eframe::App for ReDropApp {
                     }
                 }
                 ui.checkbox(&mut self.smooth, "Smooth");
+
+                let last_preset_duration = self.config.preset_duration;
+                ui.add(
+                    egui::DragValue::new(&mut self.config.preset_duration)
+                        .clamp_range(0..=1000)
+                        .update_while_editing(false), // TODO: update_while_editing don't work on drag value (mouse move), maybe check clicked/released !?
+                );
+                if last_preset_duration != self.config.preset_duration {
+                    self.ipc_to_child
+                        .as_ref()
+                        .unwrap()
+                        .send(Message::SetPresetDuration(self.config.preset_duration))
+                        .unwrap();
+                }
             })
         });
 

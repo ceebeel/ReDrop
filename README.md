@@ -76,8 +76,8 @@ ProjectM (Milkdrop) Music Visualization in Rust.
 
 ### IPC Message
 
+- [x] SetPresetDuration (f64)
 - [ ] SetBeatSensitivity { value: f64 }
-- [ ] SetBeatDuration { value: f32 }
 
 ## Future ideas
 

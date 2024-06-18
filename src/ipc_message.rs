@@ -7,6 +7,7 @@ pub enum Message {
     LoadPresetFile { path: PathBuf, smooth: bool },
     RandomPresetRequest,                  // -> LoadPresetFile
     SwitchPresetRequest { smooth: bool }, // -> LoadPresetFile
+    SetPresetDuration(f64),
 }
 
 #[derive(Debug, Serialize, Deserialize)]
