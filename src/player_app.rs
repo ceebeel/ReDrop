@@ -58,7 +58,7 @@ struct PlayerApp {
     fullscreen: bool,
     ipc_from_parent: ipc_channel::ipc::IpcReceiver<Message>,
     ipc_to_parent: ipc_channel::ipc::IpcSender<Message>,
-
+    current_preset_name: String,
     frame_history: frame_history::FrameHistory,
 }
 
@@ -79,7 +79,7 @@ impl PlayerApp {
             fullscreen: false,
             ipc_from_parent,
             ipc_to_parent,
-
+            current_preset_name: String::default(),
             frame_history: frame_history::FrameHistory::default(),
         };
         player_app.init();
@@ -137,21 +137,18 @@ impl PlayerApp {
         project_m.set_preset_duration(config.preset_duration);
     }
 
-    fn load_preset_file(&self, ctx: &egui::Context, path: &Path, smooth: bool) {
+    fn load_preset_file(&mut self, path: &Path, smooth: bool) {
         // project_m.load_preset_file does not work fine with special characters like spaces...
-        let name = "ReDrop: ".to_string() + path.file_stem().unwrap().to_string_lossy().as_ref();
-        ctx.send_viewport_cmd(egui::ViewportCommand::Title(name));
+        self.current_preset_name = path.file_stem().unwrap().to_string_lossy().into_owned(); // TODO: .into_owned() !?
         let data = std::fs::read_to_string(path).unwrap();
         self.project_m.load_preset_data(&data, smooth);
     }
 
     // ipc-channel
-    fn check_for_ipc_message(&self, ctx: &egui::Context) {
+    fn check_for_ipc_message(&mut self) {
         if let Ok(message) = self.ipc_from_parent.try_recv() {
             match message {
-                Message::LoadPresetFile { path, smooth } => {
-                    self.load_preset_file(ctx, &path, smooth)
-                }
+                Message::LoadPresetFile { path, smooth } => self.load_preset_file(&path, smooth),
                 Message::SetPresetDuration(duration) => {
                     println!("SetPresetDuration: {}", duration); // TODO: Remove this if fixed: too many request (Don't send request before release drag)
                     self.project_m.set_preset_duration(duration);
@@ -175,16 +172,23 @@ impl eframe::App for PlayerApp {
         // let now = Instant::now(); // Fix sync
         self.frame_history
             .on_new_frame(ctx.input(|i| i.time), frame.info().cpu_usage);
-        let mean_frame_time = self.frame_history.mean_frame_time();
-        println!("Mean Frame time: {}", mean_frame_time);
-        println!("Mean CPU usage: {:.2} ms / frame", 1e3 * mean_frame_time);
-        println!("FPS: {}", self.frame_history.fps());
-        println!("-------------------");
+        self.project_m.set_fps(self.frame_history.fps() as u32);
 
-        self.check_for_ipc_message(ctx); // TODO: Fix: Lag (small) on load_preset_file with large files
+        if !self.fullscreen {
+            let window_title = format!(
+                "ReDrop - {:.0}fps - {:.2}ms - {}",
+                self.frame_history.fps(),
+                1e3 * self.frame_history.mean_frame_time(), // CPU Usage in ms / frame
+                self.current_preset_name
+            );
+            ctx.send_viewport_cmd(egui::ViewportCommand::Title(window_title));
+            // TODO: Set window title when preset is loaded (on fullscreen - no fps or cpu usage)
+        }
+
+        self.check_for_ipc_message();
 
         self.project_m.render_frame();
-        ctx.request_repaint(); // TODO: Check if sync with frame rate
+        ctx.request_repaint();
 
         if ctx.input(|i| i.key_pressed(egui::Key::F)) {
             self.toggle_fullscreen(ctx);
