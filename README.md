@@ -30,7 +30,7 @@ ProjectM (Milkdrop) Music Visualization in Rust.
   <https://docs.rs/egui/latest/egui/util/struct.History.html>
 - [X] Window Title = ReDrop - { fps } fps - { preset_name }
 - [ ] Disable fullscreen on ESCAPE -> (Config -> Shortcut)
-- [ ] Hide cursor on fullscreen
+- [X] Hide cursor on fullscreen
 - [ ] Toggle fullscreen on Double Click
 - [ ] Set preset error Callback
   

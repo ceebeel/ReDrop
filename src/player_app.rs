@@ -108,6 +108,7 @@ impl PlayerApp {
     fn toggle_fullscreen(&mut self, ctx: &egui::Context) {
         if self.fullscreen {
             ctx.send_viewport_cmd(egui::viewport::ViewportCommand::Fullscreen(false));
+            ctx.send_viewport_cmd(egui::viewport::ViewportCommand::CursorVisible(true));
             self.project_m.set_window_size(
                 self.config.window_width as usize,
                 self.config.window_height as usize,
@@ -115,6 +116,7 @@ impl PlayerApp {
             self.fullscreen = false;
         } else {
             ctx.send_viewport_cmd(egui::viewport::ViewportCommand::Fullscreen(true));
+            ctx.send_viewport_cmd(egui::viewport::ViewportCommand::CursorVisible(false));
 
             // Resize viewport
             let monitor_size = ctx.input(|i| i.viewport().monitor_size);
