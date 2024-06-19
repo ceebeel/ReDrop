@@ -14,6 +14,7 @@ use config::Config;
 
 mod audio;
 mod config;
+mod frame_history;
 mod ipc_message;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -57,6 +58,8 @@ struct PlayerApp {
     fullscreen: bool,
     ipc_from_parent: ipc_channel::ipc::IpcReceiver<Message>,
     ipc_to_parent: ipc_channel::ipc::IpcSender<Message>,
+
+    frame_history: frame_history::FrameHistory,
 }
 
 impl PlayerApp {
@@ -76,6 +79,8 @@ impl PlayerApp {
             fullscreen: false,
             ipc_from_parent,
             ipc_to_parent,
+
+            frame_history: frame_history::FrameHistory::default(),
         };
         player_app.init();
         player_app
@@ -166,7 +171,16 @@ impl PlayerApp {
 }
 
 impl eframe::App for PlayerApp {
-    fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
+    fn update(&mut self, ctx: &egui::Context, frame: &mut eframe::Frame) {
+        // let now = Instant::now(); // Fix sync
+        self.frame_history
+            .on_new_frame(ctx.input(|i| i.time), frame.info().cpu_usage);
+        let mean_frame_time = self.frame_history.mean_frame_time();
+        println!("Mean Frame time: {}", mean_frame_time);
+        println!("Mean CPU usage: {:.2} ms / frame", 1e3 * mean_frame_time);
+        println!("FPS: {}", self.frame_history.fps());
+        println!("-------------------");
+
         self.check_for_ipc_message(ctx); // TODO: Fix: Lag (small) on load_preset_file with large files
 
         self.project_m.render_frame();
@@ -180,6 +194,8 @@ impl eframe::App for PlayerApp {
         if ctx.input(|i| i.key_pressed(egui::Key::R)) {
             self.send_random_preset_request();
         }
+
+        // self.frame_history.limit_fps(now); // TODO : Fix sync
     }
     fn on_exit(&mut self, _gl: Option<&eframe::glow::Context>) {
         self.audio.is_capturing = false;

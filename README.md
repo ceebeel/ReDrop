@@ -23,7 +23,8 @@ ProjectM (Milkdrop) Music Visualization in Rust.
 ### Player App
 
 - [X] Set switch preset request Callback
-- [ ] Calculate & Sync FPS  
+- [X] Calculate FPS
+- [ ] Sync FPS  
   <https://github.com/emilk/egui/issues/1109>  
   <https://github.com/emilk/egui/discussions/342>  
   <https://docs.rs/egui/latest/egui/util/struct.History.html>
@@ -36,6 +37,7 @@ ProjectM (Milkdrop) Music Visualization in Rust.
 - [ ] Add projectm_opengl_render_frame_fbo to crate projectM and test it.  
   <https://github.com/projectM-visualizer/projectm/blob/master/src/api/include/projectM-4/render_opengl.h>
 - [ ] Add touch (waveform)
+- [ ] Add Notification Label (for event)
 
 ### Config
 
