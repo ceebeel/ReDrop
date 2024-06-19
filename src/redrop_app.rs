@@ -138,11 +138,14 @@ impl ReDropApp {
             if response.clicked() {
                 self.send_load_preset_file(preset.id, self.smooth)
             }
-        } else if ui.button(&preset.name).clicked() {
-            self.send_load_preset_file(preset.id, self.smooth)
-            // TODO: Button must be square
-            // TODO: Idea: Create preview image on Right Click
-            // ui.add_sized(ui.available_size(), widget);
+        } else {
+            // TODO: Idea: Create preview image (screenshot) on Right Click // Or all (scan) in Config View
+            if ui
+                .add_sized([64., 64.], egui::Button::new(&preset.name)) // TODO Fix: Button size "overflow" if name is too long / This can be a problem with grid..
+                .clicked()
+            {
+                self.send_load_preset_file(preset.id, self.smooth)
+            }
         }
     }
 

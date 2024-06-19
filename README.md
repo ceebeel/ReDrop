@@ -7,7 +7,7 @@ ProjectM (Milkdrop) Music Visualization in Rust.
 ### ReDrop App
 
 - [X] Add Scroll Area
-- [ ] Show preset without image in square Button (like img)
+- [x] Show preset without image in square Button (like img)
 - [ ] Show presets in a Grid Layout (Responsive)
 - [ ] Change preset time interval on nBar (4 beat)  
   160 bpm, 32 bar -> 48s [4 / ( (160 / 60) ) * 32]
