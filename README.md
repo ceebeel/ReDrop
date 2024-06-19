@@ -6,7 +6,7 @@ ProjectM (Milkdrop) Music Visualization in Rust.
 
 ### ReDrop App
 
-- [ ] Add Scroll Area
+- [X] Add Scroll Area
 - [ ] Show preset without image in square Button (like img)
 - [ ] Show presets in a Grid Layout (Responsive)
 - [ ] Change preset time interval on nBar (4 beat)  
@@ -24,7 +24,7 @@ ProjectM (Milkdrop) Music Visualization in Rust.
 
 - [X] Set switch preset request Callback
 - [X] Calculate FPS
-- [ ] Sync FPS  
+- [ ] Sync FPS (Limit)  
   <https://github.com/emilk/egui/issues/1109>  
   <https://github.com/emilk/egui/discussions/342>  
   <https://docs.rs/egui/latest/egui/util/struct.History.html>

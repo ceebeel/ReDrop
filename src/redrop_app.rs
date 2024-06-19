@@ -235,7 +235,9 @@ impl eframe::App for ReDropApp {
         });
 
         egui::CentralPanel::default().show(ctx, |ui| {
-            self.show_presets_tree(ui, &self.presets.tree); // TODO: Move presets_tree in the fn
+            egui::ScrollArea::vertical().show(ui, |ui| {
+                self.show_presets_tree(ui, &self.presets.tree); // TODO: Move presets_tree in the fn
+            });
         });
     }
 }
