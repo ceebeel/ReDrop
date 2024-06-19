@@ -142,6 +142,7 @@ impl ReDropApp {
             self.send_load_preset_file(preset.id, self.smooth)
             // TODO: Button must be square
             // TODO: Idea: Create preview image on Right Click
+            // ui.add_sized(ui.available_size(), widget);
         }
     }
 
@@ -235,7 +236,7 @@ impl eframe::App for ReDropApp {
         });
 
         egui::CentralPanel::default().show(ctx, |ui| {
-            egui::ScrollArea::vertical().show(ui, |ui| {
+            egui::ScrollArea::vertical().auto_shrink(false).show(ui, |ui| {
                 self.show_presets_tree(ui, &self.presets.tree); // TODO: Move presets_tree in the fn
             });
         });

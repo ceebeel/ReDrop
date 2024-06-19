@@ -103,3 +103,4 @@ ProjectM (Milkdrop) Music Visualization in Rust.
   > thread 'main' panicked at src/player_app.rs:216:50:
   > called `Result::unwrap()` on an `Err` value: Error { kind: InvalidData, message: "stream did not contain valid UTF-8" }
   > note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+- [ ] ReDrop App: In `show_preset`: Scroll (MouseWheel) not work with `image_hovered`
