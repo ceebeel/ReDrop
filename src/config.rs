@@ -1,4 +1,5 @@
 use egui::Vec2;
+use rfd::FileDialog;
 use serde::{Deserialize, Serialize};
 use std::path::PathBuf;
 
@@ -65,10 +66,26 @@ impl Config {
         ui.end_row();
     }
 
-    fn add_path_text_edit_row(&mut self, ui: &mut egui::Ui, name: &str, value: &mut String) {
+    fn add_path_text_edit_row(&mut self, ui: &mut egui::Ui, name: &str, mut value: &mut String) {
         ui.label(name);
         ui.add(egui::TextEdit::singleline(value).min_size(Vec2::new(300., 0.))); // TODO: Maybe use desired_sise f32::INFINITY ?!
-        let _ = ui.button("Open");
+        if ui.button("Open").clicked() {
+            // TODO: If path is in current directory, use relative path
+            let path = std::path::Path::new(value);
+            let mut absolute_path = path.to_path_buf();
+            if !absolute_path.exists() {
+                absolute_path = std::env::current_dir().unwrap();
+            } else if path.is_relative() {
+                absolute_path = std::env::current_dir().unwrap().join(path);
+            }
+
+            let directory = FileDialog::new()
+                .set_directory(absolute_path)
+                .set_title(format!("ReDrop - Select Folder for {}", name))
+                .pick_folder();
+            let selected = directory.unwrap(); // TODO: Handle error, or_default !?
+            *value = selected.to_string_lossy().into_owned();
+        }
         ui.end_row();
     }
 

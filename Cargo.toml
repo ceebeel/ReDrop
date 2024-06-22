@@ -28,6 +28,7 @@ serde = { version = "1.0.203", features = ["derive"] }
 toml = "0.8.14"
 ipc-channel = "0.18.1"
 rand = "0.8.5"
+rfd = "0.14.1"
 
 # [profile.release]
 # opt-level = 2 # fast and small wasm

@@ -12,12 +12,13 @@ ProjectM (Milkdrop) Music Visualization in Rust.
 - [ ] Change preset time interval on nBar (4 beat)  
   160 bpm, 32 bar -> 48s [4 / ( (160 / 60) ) * 32]
 - [ ] Set Window default size (persistence !?)
+- [ ] Add Search Entry for preset name
 
 - [ ] Config View:
   - [ ] Save
   - [ ] Reload
   - [ ] Reset (Default)
-  - [ ] `open` File explorer
+  - [x] `open` File Dialog
   - [ ] Shortcut table UI
 
 ### Player App
@@ -28,6 +29,7 @@ ProjectM (Milkdrop) Music Visualization in Rust.
   <https://github.com/emilk/egui/issues/1109>  
   <https://github.com/emilk/egui/discussions/342>  
   <https://docs.rs/egui/latest/egui/util/struct.History.html>
+  <https://github.com/projectM-visualizer/frontend-sdl2/blob/master/src/FPSLimiter.cpp>
 - [X] Window Title = ReDrop - { fps } fps - { preset_name }
 - [ ] Disable fullscreen on ESCAPE -> (Config -> Shortcut)
 - [X] Hide cursor on fullscreen
@@ -93,7 +95,7 @@ ProjectM (Milkdrop) Music Visualization in Rust.
 
 ## Known bugs
 
-- [ ] Both App crash on `ipc_check` if the other app (window) is closed (icp_channel: err, closed channel).  
+- [ ] Both App crash on `check_for_ipc_message` if the other app (window) is closed (icp_channel: err, closed channel).  
   And can't find the channel name if the application is subsequently reopened. (New channel is created..).
 - [ ] ReDrop App doesn't receive IPC messages if the window is minimized on taskbar (not rendered)!
 - [ ] Player App sometimes crashes:
@@ -104,3 +106,7 @@ ProjectM (Milkdrop) Music Visualization in Rust.
   > called `Result::unwrap()` on an `Err` value: Error { kind: InvalidData, message: "stream did not contain valid UTF-8" }
   > note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 - [ ] ReDrop App: In `show_preset`: Scroll (MouseWheel) not work with `image_hovered`
+- [ ] Redrop App: Openned config `FileDialog` block the app and `check_for_ipc_message` in `update`
+- [ ] ReDrop App: Can't randomize emyty list `send_random_preset_file`  
+   > thread 'main' panicked at cargo\registry\src\index.crates.io-6f17d22bba15001f\rand-0.8.5\src\rng.rs:134:9:  
+   > cannot sample empty range
