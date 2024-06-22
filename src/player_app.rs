@@ -189,12 +189,16 @@ impl eframe::App for PlayerApp {
         self.project_m.render_frame();
         ctx.request_repaint();
 
-        if ctx.input(|i| i.key_pressed(egui::Key::F)) {
+        if ctx.input(|i| i.key_pressed(self.config.shortcuts.toggle_fullscreen)) {
             self.toggle_fullscreen(ctx);
         }
-        // TODO: Split toggle_fullscreen into two functions and add egui::Key::ESCAPE to set_fullscreen(false)
 
-        if ctx.input(|i| i.key_pressed(egui::Key::R)) {
+        if ctx.input(|i| i.key_pressed(self.config.shortcuts.disable_fullscreen)) {
+            self.toggle_fullscreen(ctx);
+            // TODO: fn Disable fullscreen
+        }
+
+        if ctx.input(|i| i.key_pressed(self.config.shortcuts.random_preset)) {
             self.send_random_preset_request();
         }
 
