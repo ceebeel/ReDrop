@@ -168,8 +168,8 @@ impl ReDropApp {
         ctx.show_viewport_immediate(
             egui::ViewportId::from_hash_of("config_immediate_viewport"),
             egui::ViewportBuilder::default()
-                .with_title("ReDrop Config")
-                .with_window_level(egui::WindowLevel::AlwaysOnTop)
+                .with_title("ReDrop - Config")
+                // .with_window_level(egui::WindowLevel::AlwaysOnTop)
                 .with_resizable(false)
                 .with_inner_size([480.0, 236.0]),
             |ctx, _class| {
