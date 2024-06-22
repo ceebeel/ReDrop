@@ -11,6 +11,7 @@ pub struct Config {
     pub textures_path: String, // Default: ./textures
     pub beat_sensitivity: f32, // Default: 1.0
     pub preset_duration: f64,  // Default: 60 (in seconds)
+    pub shortcuts: Shortcuts,
 }
 
 impl Default for Config {
@@ -23,6 +24,40 @@ impl Default for Config {
             textures_path: "Textures".to_string(),
             beat_sensitivity: 1.,
             preset_duration: 5., // TODO: Restore to default (60)
+            shortcuts: Shortcuts::default(),
+        }
+    }
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug)]
+pub struct Shortcuts {
+    pub toggle_fullscreen: egui::Key, // TODO: Double Click
+    pub disable_fullscreen: egui::Key,
+    pub next_preset: egui::Key,
+    pub prev_preset: egui::Key,
+    pub random_preset: egui::Key,
+    pub beat_sensitivity_up: egui::Key,
+    pub beat_sensitivity_down: egui::Key,
+    // pub preset_speed_up: egui::Key,
+    // pub preset_speed_down: egui::Key,
+    pub rating_up: egui::Key,
+    pub rating_down: egui::Key,
+}
+
+impl Default for Shortcuts {
+    fn default() -> Self {
+        Self {
+            toggle_fullscreen: egui::Key::F,
+            disable_fullscreen: egui::Key::Escape,
+            next_preset: egui::Key::N,
+            prev_preset: egui::Key::P,
+            random_preset: egui::Key::R,
+            beat_sensitivity_up: egui::Key::ArrowUp,
+            beat_sensitivity_down: egui::Key::ArrowDown,
+            // preset_speed_up: egui::Key::ArrowLeft,
+            // preset_speed_down: egui::Key::ArrowRight,
+            rating_up: egui::Key::Plus,
+            rating_down: egui::Key::Minus,
         }
     }
 }
