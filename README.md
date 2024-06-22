@@ -15,9 +15,9 @@ ProjectM (Milkdrop) Music Visualization in Rust.
 - [ ] Add Search Entry for preset name
 
 - [ ] Config View:
-  - [ ] Save
-  - [ ] Reload
-  - [ ] Reset (Default)
+  - [X] Save
+  - [X] Reload
+  - [X] Reset (Default)
   - [x] `open` File Dialog
   - [ ] Shortcut table UI
 
@@ -55,6 +55,8 @@ ProjectM (Milkdrop) Music Visualization in Rust.
   - [ ] +/- Beat Sensitivity (UP/DOWN)
   - [ ] Preset Speed (LEFT/RIGHT)
   - [ ] Rating (+/-)
+- [ ] Data validation, before loading
+- [ ] `config.toml` in Home directory (.redrop/config.toml) or in current_dir ? (Where to write it by default ?!)
 
 ### Preset
 

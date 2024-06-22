@@ -1,15 +1,12 @@
 use egui::Vec2;
 use rfd::FileDialog;
 use serde::{Deserialize, Serialize};
-use std::path::PathBuf;
-
-pub type FrameRate = u32;
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct Config {
     pub window_width: f32,     // Default: 800
     pub window_height: f32,    // Default: 600
-    pub frame_rate: FrameRate, // Default: 60 fps
+    pub frame_rate: u32,       // Default: 60 fps
     pub presets_path: String,  // Default: ./presets
     pub textures_path: String, // Default: ./textures
     pub beat_sensitivity: f32, // Default: 1.0
@@ -31,21 +28,29 @@ impl Default for Config {
 }
 
 impl Config {
-    pub fn load_from_file_or_default(path: &PathBuf) -> Self {
-        std::fs::read_to_string(path)
+    pub fn load_from_file_or_default() -> Self {
+        std::fs::read_to_string("config.toml")
             .map(|data| toml::from_str(&data).unwrap_or_default())
             .unwrap_or_default()
     }
 
-    #[allow(dead_code)]
-    pub fn save_to_file(&self, path: &PathBuf) {
+    pub fn save_to_file(&self) {
         let data = toml::to_string(&self).unwrap();
-        std::fs::write(path, data).unwrap();
+        std::fs::write("config.toml", data).unwrap();
     }
 
-    // pub fn save(&mut self, config: config) {
+    fn update_and_save(&mut self, config_draft: Config) {
+        *self = config_draft;
+        self.save_to_file();
+    }
 
-    // }
+    fn reload_config(&self, config_draft: &mut Config) {
+        *config_draft = self.clone();
+    }
+
+    fn restore_defaults(&self, config_draft: &mut Config) {
+        *config_draft = Config::default();
+    }
 
     // UI
     fn add_number_row<T: eframe::emath::Numeric>(
@@ -66,7 +71,7 @@ impl Config {
         ui.end_row();
     }
 
-    fn add_path_text_edit_row(&mut self, ui: &mut egui::Ui, name: &str, mut value: &mut String) {
+    fn add_path_text_edit_row(&mut self, ui: &mut egui::Ui, name: &str, value: &mut String) {
         ui.label(name);
         ui.add(egui::TextEdit::singleline(value).min_size(Vec2::new(300., 0.))); // TODO: Maybe use desired_sise f32::INFINITY ?!
         if ui.button("Open").clicked() {
@@ -145,9 +150,16 @@ impl Config {
         ui.separator();
         ui.add_space(4.0);
         ui.horizontal(|ui| {
-            let _ = ui.button("Save Config");
-            let _ = ui.button("Reload Config");
-            let _ = ui.button("Restore Defaults");
+            if ui.button("Save Config").clicked() {
+                self.update_and_save(config_draft.to_owned());
+                ui.ctx().send_viewport_cmd(egui::ViewportCommand::Close)
+            }
+            if ui.button("Reload Config").clicked() {
+                self.reload_config(config_draft);
+            }
+            if ui.button("Restore Defaults").clicked() {
+                self.restore_defaults(config_draft);
+            }
         });
     }
 }

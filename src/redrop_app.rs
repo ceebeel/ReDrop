@@ -1,7 +1,7 @@
 use eframe::egui;
 
 use std::collections::BTreeMap;
-use std::path::{Path, PathBuf};
+use std::path::Path;
 
 use crate::ipc_message::{IpcExchange, Message};
 use ipc_channel::ipc::IpcOneShotServer;
@@ -9,8 +9,6 @@ use ipc_channel::ipc::IpcOneShotServer;
 mod config;
 mod ipc_message;
 mod preset;
-
-// pub type FrameRate = u32;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     env_logger::init();
@@ -41,7 +39,7 @@ struct ReDropApp {
 impl ReDropApp {
     fn new() -> Self {
         let mut slf = Self::default();
-        slf.config = config::Config::load_from_file_or_default(&PathBuf::from("./config.toml"));
+        slf.config = config::Config::load_from_file_or_default();
         slf.config_draft = slf.config.clone();
         slf.presets
             .update_presets_lists_and_tree(Path::new(&slf.config.presets_path));

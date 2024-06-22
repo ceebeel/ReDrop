@@ -32,10 +32,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         })
         .unwrap();
 
-    // TODO: Put config in user home directory
-    let config_path = std::path::PathBuf::from("./config.toml"); // "config.toml";
-    let config = config::Config::load_from_file_or_default(&config_path);
-    config.save_to_file(&std::path::PathBuf::from("./config.toml")); // TODO: Only save if not exists
+    let config = config::Config::load_from_file_or_default();
     let options = eframe::NativeOptions {
         viewport: egui::ViewportBuilder::default()
             .with_title("ReDrop Player")
