@@ -29,29 +29,37 @@ impl Presets {
 
     fn scan_presets(&mut self, path: &Path) -> BTreeMap<String, Node> {
         let mut node = BTreeMap::new();
-        for entry in fs::read_dir(path).unwrap() {
-            let path = entry.unwrap().path();
-            if path.is_dir() {
-                let mut inner_node = BTreeMap::new();
-                inner_node.extend(self.scan_presets(&path));
-                node.insert(
-                    path.file_name().unwrap().to_string_lossy().into_owned(),
-                    Node::InnerNode(inner_node),
-                );
-            } else if path.extension().unwrap() == "milk" {
-                let name = path.file_stem().unwrap().to_string_lossy().into_owned();
-                let img = path.with_extension("jpg");
-                let preset_id = self.lists.len();
-                let preset = Preset {
-                    id: preset_id,
-                    name: name.clone(),
-                    path: path.clone(),
-                    img: if img.exists() { Some(img) } else { None },
-                };
-                node.insert(name, Node::PresetId(preset_id));
-                self.lists.push(preset);
+        match fs::read_dir(path) {
+            Ok(entries) => {
+                for entry in entries {
+                    let path = entry.unwrap().path();
+                    if path.is_dir() {
+                        let mut inner_node = BTreeMap::new();
+                        inner_node.extend(self.scan_presets(&path));
+                        node.insert(
+                            path.file_name().unwrap().to_string_lossy().into_owned(),
+                            Node::InnerNode(inner_node),
+                        );
+                    } else if path.extension().unwrap() == "milk" {
+                        let name = path.file_stem().unwrap().to_string_lossy().into_owned();
+                        let img = path.with_extension("jpg");
+                        let preset_id = self.lists.len();
+                        let preset = Preset {
+                            id: preset_id,
+                            name: name.clone(),
+                            path: path.clone(),
+                            img: if img.exists() { Some(img) } else { None },
+                        };
+                        node.insert(name, Node::PresetId(preset_id));
+                        self.lists.push(preset);
+                    }
+                }
+            }
+            Err(e) => {
+                println!("Error: Check `presets path` in config ! ({})", e);
             }
         }
+
         node
     }
 }
