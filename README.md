@@ -2,6 +2,11 @@
 
 ProjectM (Milkdrop) Music Visualization in Rust.
 
+## Build and Run
+
+> cargo build -r
+> cargo run -r
+
 ## TODO
 
 ### ReDrop App
@@ -28,7 +33,7 @@ ProjectM (Milkdrop) Music Visualization in Rust.
 - [ ] Sync FPS (Limit)  
   <https://github.com/emilk/egui/issues/1109>  
   <https://github.com/emilk/egui/discussions/342>  
-  <https://docs.rs/egui/latest/egui/util/struct.History.html>
+  <https://docs.rs/egui/latest/egui/util/struct.History.html>  
   <https://github.com/projectM-visualizer/frontend-sdl2/blob/master/src/FPSLimiter.cpp>
 - [X] Window Title = ReDrop - { fps } fps - { preset_name }
 - [ ] Disable fullscreen on ESCAPE -> (Config -> Shortcut)
@@ -66,7 +71,7 @@ ProjectM (Milkdrop) Music Visualization in Rust.
 
 ### Audio
 
-- [ ] Check audio stereo format: cpal vs projectm (pcm), [l,r,l,r,..] or [l,l,..,r,r,..] ?!
+- [ ] Check audio stereo format: cpal vs projectm (pcm), [l,r,l,r,..] or [l,l,..,r,r,..] ?!  
   <https://www.reddit.com/r/rust/comments/s0d65g/cpal_capturing_single_channel_out_of_2_channels/>
 - [ ] List Audio Devices
 - [ ] Audio Buffer Size
@@ -109,6 +114,6 @@ ProjectM (Milkdrop) Music Visualization in Rust.
   > note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 - [ ] ReDrop App: In `show_preset`: Scroll (MouseWheel) not work with `image_hovered`
 - [ ] Redrop App: Openned config `FileDialog` block the app and `check_for_ipc_message` in `update`
-- [ ] ReDrop App: Can't randomize emyty list `send_random_preset_file`  
+- [ ] ReDrop App: Can't randomize empty list `send_random_preset_file`  
    > thread 'main' panicked at cargo\registry\src\index.crates.io-6f17d22bba15001f\rand-0.8.5\src\rng.rs:134:9:  
    > cannot sample empty range
