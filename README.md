@@ -18,7 +18,7 @@ ProjectM (Milkdrop) Music Visualization in Rust.
   - [X] Save
   - [X] Reload
   - [X] Reset (Default)
-  - [x] `open` File Dialog
+  - [X] `open` File Dialog
   - [ ] Shortcut table UI
 
 ### Player App
