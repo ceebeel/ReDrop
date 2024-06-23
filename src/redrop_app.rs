@@ -235,6 +235,7 @@ impl eframe::App for ReDropApp {
                 }
                 ui.checkbox(&mut self.smooth, "Smooth");
 
+                ui.label("Preset Duration:");
                 let last_preset_duration = self.config.preset_duration;
                 ui.add(
                     egui::DragValue::new(&mut self.config.preset_duration)
@@ -249,6 +250,7 @@ impl eframe::App for ReDropApp {
                         .unwrap();
                 }
 
+                ui.label("Beat Sensitivity:");
                 let last_beat_sensitivity = self.config.beat_sensitivity;
                 ui.add(
                     egui::DragValue::new(&mut self.config.beat_sensitivity)
