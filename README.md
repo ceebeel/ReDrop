@@ -36,7 +36,6 @@ ProjectM (Milkdrop) Music Visualization in Rust.
   <https://docs.rs/egui/latest/egui/util/struct.History.html>  
   <https://github.com/projectM-visualizer/frontend-sdl2/blob/master/src/FPSLimiter.cpp>
 - [X] Window Title = ReDrop - { fps } fps - { preset_name }
-- [ ] Disable fullscreen on ESCAPE -> (Config -> Shortcut)
 - [X] Hide cursor on fullscreen
 - [ ] Toggle fullscreen on Double Click
 - [ ] Set preset error Callback
@@ -45,6 +44,7 @@ ProjectM (Milkdrop) Music Visualization in Rust.
   <https://github.com/projectM-visualizer/projectm/blob/master/src/api/include/projectM-4/render_opengl.h>
 - [ ] Add touch (waveform)
 - [ ] Add Notification Label (for event)
+- [X] Shortcuts (config)
 
 ### Config
 
@@ -52,11 +52,11 @@ ProjectM (Milkdrop) Music Visualization in Rust.
 - [ ] Check for hard and soft cut, preset_locked  
   <https://github.com/projectM-visualizer/projectm/blob/master/src/api/include/projectM-4/parameters.h>
 - [ ] Shortcut:
-  - [ ] Toggle Fullscreen (F, Double Click)
-  - [ ] Disable Fullscreen (ESCAPE)
+  - [X] Toggle Fullscreen (F, Double Click)
+  - [X] Disable Fullscreen (ESCAPE)
   - [ ] Next Preset (N)
   - [ ] Prev. Preset (P)
-  - [ ] Random Preset (R)
+  - [X] Random Preset (R)
   - [ ] +/- Beat Sensitivity (UP/DOWN)
   - [ ] Preset Speed (LEFT/RIGHT)
   - [ ] Rating (+/-)
