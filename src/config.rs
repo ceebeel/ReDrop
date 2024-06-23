@@ -27,7 +27,7 @@ impl Default for Config {
             presets_path: "Presets".to_string(),
             textures_path: "Textures".to_string(),
             beat_sensitivity: 1.,
-            preset_duration: 5., // TODO: Restore to default (60)
+            preset_duration: 60., // TODO: Restore to default (60)
             shortcuts: Shortcuts::default(),
         }
     }
