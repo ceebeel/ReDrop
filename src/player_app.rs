@@ -153,6 +153,10 @@ impl PlayerApp {
                     println!("SetPresetDuration: {}", duration); // TODO: Remove this if fixed: too many request (Don't send request before release drag)
                     self.project_m.set_preset_duration(duration);
                 }
+                Message::LoadConfigFile => {
+                    self.config = config::Config::load_from_file_or_default();
+                    self.load_config(&self.config);
+                }
                 other_message => {
                     panic!("Unhandled message: {:?}", other_message);
                 }

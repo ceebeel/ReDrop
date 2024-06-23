@@ -8,6 +8,7 @@ pub enum Message {
     RandomPresetRequest,                  // -> LoadPresetFile
     SwitchPresetRequest { smooth: bool }, // -> LoadPresetFile
     SetPresetDuration(f64),
+    LoadConfigFile,
 }
 
 #[derive(Debug, Serialize, Deserialize)]

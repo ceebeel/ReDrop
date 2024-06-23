@@ -63,7 +63,6 @@ ProjectM (Milkdrop) Music Visualization in Rust.
 - [ ] Data validation, before loading
 - [ ] `config.toml` in Home directory (.redrop/config.toml) or in current_dir ? (Where to write it by default ?!)
 
-
 ### Preset
 
 - [ ] Rating
@@ -90,6 +89,7 @@ ProjectM (Milkdrop) Music Visualization in Rust.
 
 - [x] SetPresetDuration (f64)
 - [ ] SetBeatSensitivity { value: f64 }
+- [X] LoadConfigFile (For reload config after save)
 
 ## Future ideas
 

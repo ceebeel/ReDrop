@@ -134,7 +134,12 @@ impl Config {
     }
 
     #[allow(dead_code)]
-    pub fn show(&mut self, config_draft: &mut Config, ui: &mut egui::Ui) {
+    pub fn show(
+        &mut self,
+        config_draft: &mut Config,
+        ui: &mut egui::Ui,
+        send_load_config_file: impl Fn(),
+    ) {
         egui::Grid::new("config_grid")
             .num_columns(3)
             .spacing([16.0, 4.0])
@@ -207,6 +212,7 @@ impl Config {
         ui.horizontal(|ui| {
             if ui.button("Save Config").clicked() {
                 self.update_and_save(config_draft.to_owned());
+                send_load_config_file();
                 ui.ctx().send_viewport_cmd(egui::ViewportCommand::Close)
             }
             if ui.button("Reload Config").clicked() {

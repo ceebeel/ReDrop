@@ -112,6 +112,14 @@ impl ReDropApp {
             .unwrap();
     }
 
+    // fn send_load_config_file(&self) {
+    //     self.ipc_to_child
+    //         .as_ref()
+    //         .unwrap()
+    //         .send(Message::LoadConfigFile)
+    //         .unwrap();
+    // }
+
     // UI
     fn show_preset(&self, ui: &mut egui::Ui, preset_id: &usize) {
         // TODO: Add image button into a Grid (Responsive ?)
@@ -169,10 +177,19 @@ impl ReDropApp {
                 .with_title("ReDrop - Config")
                 // .with_window_level(egui::WindowLevel::AlwaysOnTop)
                 .with_resizable(false)
-                .with_inner_size([480.0, 236.0]),
+                .with_inner_size([480.0, 300.0]), // TODO: Auto size to fit content
             |ctx, _class| {
                 egui::CentralPanel::default().show(ctx, |ui| {
-                    self.config.show(&mut self.config_draft, ui);
+                    let ipc_to_child = &self.ipc_to_child;
+                    let send_load_config_file = || {
+                        ipc_to_child
+                            .as_ref()
+                            .unwrap()
+                            .send(Message::LoadConfigFile)
+                            .unwrap();
+                    };
+                    self.config
+                        .show(&mut self.config_draft, ui, send_load_config_file);
                 });
 
                 if ctx.input(|i| i.viewport().close_requested()) {
@@ -187,14 +204,12 @@ impl eframe::App for ReDropApp {
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
         self.check_for_ipc_message();
         ctx.request_repaint();
-        std::thread::sleep(std::time::Duration::from_millis(10));
-        // TODO: Spawn check_for_ipc_message in a thread (for not refresh ui all)
+        std::thread::sleep(std::time::Duration::from_millis(10)); // TODO: Spawn check_for_ipc_message in a thread (for not continuously updating the UI)
 
         if self.show_config {
             self.show_config(ctx);
         }
 
-        // TODO: Add Scroll
         egui::TopBottomPanel::top("top_panel").show(ctx, |ui| {
             ui.horizontal(|ui| {
                 if ui.button("Config").clicked() {
