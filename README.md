@@ -37,7 +37,7 @@ ProjectM (Milkdrop) Music Visualization in Rust.
   <https://github.com/projectM-visualizer/frontend-sdl2/blob/master/src/FPSLimiter.cpp>
 - [X] Window Title = ReDrop - { fps } fps - { preset_name }
 - [X] Hide cursor on fullscreen
-- [ ] Toggle fullscreen on Double Click
+- [X] Toggle fullscreen on Double Click (One Click for now)
 - [ ] Set preset error Callback
   
 - [ ] Add projectm_opengl_render_frame_fbo to crate projectM and test it.  
@@ -48,7 +48,7 @@ ProjectM (Milkdrop) Music Visualization in Rust.
 
 ### Config
 
-- [ ] Add mesh size (32..512)
+- [X] Add mesh size (8..300)
 - [ ] Check for hard and soft cut, preset_locked  
   <https://github.com/projectM-visualizer/projectm/blob/master/src/api/include/projectM-4/parameters.h>
 - [ ] Shortcut:
@@ -62,6 +62,7 @@ ProjectM (Milkdrop) Music Visualization in Rust.
   - [ ] Rating (+/-)
 - [ ] Data validation, before loading
 - [ ] `config.toml` in Home directory (.redrop/config.toml) or in current_dir ? (Where to write it by default ?!)
+
 
 ### Preset
 
@@ -117,3 +118,4 @@ ProjectM (Milkdrop) Music Visualization in Rust.
 - [ ] ReDrop App: Can't randomize empty list `send_random_preset_file`  
    > thread 'main' panicked at cargo\registry\src\index.crates.io-6f17d22bba15001f\rand-0.8.5\src\rng.rs:134:9:  
    > cannot sample empty range
+- [ ] Config UI: `DragValue` speed is not step !

@@ -129,6 +129,7 @@ impl PlayerApp {
         let project_m = &self.project_m;
 
         project_m.set_window_size(config.window_width as usize, config.window_height as usize);
+        project_m.set_mesh_size(config.mesh_width as usize, config.mesh_height as usize);
         project_m.set_fps(config.frame_rate);
         let paths = vec![config.textures_path.clone()];
         project_m.set_texture_search_paths(&paths, 1);

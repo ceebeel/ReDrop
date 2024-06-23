@@ -6,6 +6,8 @@ use serde::{Deserialize, Serialize};
 pub struct Config {
     pub window_width: f32,     // Default: 800
     pub window_height: f32,    // Default: 600
+    pub mesh_width: u32,       // Default: 32
+    pub mesh_height: u32,      // Default: 24
     pub frame_rate: u32,       // Default: 60 fps
     pub presets_path: String,  // Default: ./presets
     pub textures_path: String, // Default: ./textures
@@ -19,6 +21,8 @@ impl Default for Config {
         Self {
             window_width: 800.,
             window_height: 600.,
+            mesh_width: 32,
+            mesh_height: 24,
             frame_rate: 60,
             presets_path: "Presets".to_string(),
             textures_path: "Textures".to_string(),
@@ -154,6 +158,19 @@ impl Config {
                     2000.,
                     1.,
                 );
+
+                ui.label("Mesh Size:");
+                ui.end_row();
+                self.add_number_row(ui, "    Width:", &mut config_draft.mesh_width, 8., 300., 8.); // TODO : max, min, step ?!
+                self.add_number_row(
+                    ui,
+                    "    Height:",
+                    &mut config_draft.mesh_height,
+                    8.,
+                    300.,
+                    2.,
+                );
+
                 self.add_number_row(
                     ui,
                     "Frame Rate:",
@@ -162,8 +179,10 @@ impl Config {
                     144.,
                     1.,
                 );
+
                 self.add_path_text_edit_row(ui, "Presets Path:", &mut config_draft.presets_path);
                 self.add_path_text_edit_row(ui, "Textures Path:", &mut config_draft.textures_path);
+
                 self.add_number_row(
                     ui,
                     "Beat Sensitivity:",
@@ -172,6 +191,7 @@ impl Config {
                     10.,
                     0.1,
                 );
+
                 self.add_number_row(
                     ui,
                     "Preset Duration:",
