@@ -248,6 +248,20 @@ impl eframe::App for ReDropApp {
                         .send(Message::SetPresetDuration(self.config.preset_duration))
                         .unwrap();
                 }
+
+                let last_beat_sensitivity = self.config.beat_sensitivity;
+                ui.add(
+                    egui::DragValue::new(&mut self.config.beat_sensitivity)
+                        .clamp_range(0.1..=10.)
+                        .update_while_editing(false), // TODO: update_while_editing don't work on drag value (mouse move), maybe check clicked/released !?
+                );
+                if last_beat_sensitivity != self.config.beat_sensitivity {
+                    self.ipc_to_child
+                        .as_ref()
+                        .unwrap()
+                        .send(Message::SetBeatSensitivity(self.config.beat_sensitivity))
+                        .unwrap();
+                }
             })
         });
 
