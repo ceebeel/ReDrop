@@ -4,7 +4,7 @@ use std::path::Path;
 use std::sync::Arc;
 
 use projectm::core::ProjectM;
-pub type ProjectMWrapped = Arc<ProjectM>;
+// pub type ProjectMWrapped = Arc<ProjectM>;
 
 use crate::ipc_message::{IpcExchange, Message};
 use ipc_channel::ipc;
@@ -49,7 +49,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 }
 
 struct PlayerApp {
-    project_m: ProjectMWrapped,
+    project_m: Arc<ProjectM>,
     config: config::Config,
     audio: audio::Audio,
     fullscreen: bool,
@@ -212,6 +212,20 @@ impl eframe::App for PlayerApp {
 
         if ctx.input(|i| i.key_pressed(self.config.shortcuts.random_preset)) {
             self.send_random_preset_request();
+        }
+
+        if ctx.input(|i| i.key_pressed(self.config.shortcuts.beat_sensitivity_up))  {
+            self.config.beat_sensitivity += 0.1;
+            self.project_m.set_beat_sensitivity(self.config.beat_sensitivity);
+            self.ipc_to_parent.send(Message::SetBeatSensitivity(self.config.beat_sensitivity)).unwrap();
+            println!("SetBeatSensitivity: {}", self.config.beat_sensitivity);
+
+        }
+        if ctx.input(|i| i.key_pressed(self.config.shortcuts.beat_sensitivity_down))  { 
+            self.config.beat_sensitivity -= 0.1;
+            self.project_m.set_beat_sensitivity(self.config.beat_sensitivity);
+            self.ipc_to_parent.send(Message::SetBeatSensitivity(self.config.beat_sensitivity)).unwrap();
+            println!("SetBeatSensitivity: {}", self.config.beat_sensitivity);
         }
 
         // self.frame_history.limit_fps(now); // TODO : Fix sync
