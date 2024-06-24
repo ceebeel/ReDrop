@@ -1,4 +1,4 @@
-use eframe::{egui, glow};
+use eframe::egui;
 
 use std::path::Path;
 use std::sync::Arc;
@@ -144,8 +144,12 @@ impl PlayerApp {
     fn load_preset_file(&mut self, path: &Path, smooth: bool) {
         // project_m.load_preset_file does not work fine with special characters like spaces...
         self.current_preset_name = path.file_stem().unwrap().to_string_lossy().into_owned(); // TODO: .into_owned() !?
-        let data = std::fs::read_to_string(path).unwrap(); //TODO : Error handling
-        self.project_m.load_preset_data(&data, smooth);
+        if let Ok(data) = std::fs::read_to_string(path) {
+            self.project_m.load_preset_data(&data, smooth);
+        } else {
+            println!("Failed to load preset file: {:?}", path);
+            self.send_random_preset_request();
+        }
     }
 
     // ipc-channel
