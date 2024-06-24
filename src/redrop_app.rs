@@ -31,6 +31,7 @@ struct ReDropApp {
     show_config: bool,
     presets: preset::Presets,
     smooth: bool,
+    preset_search_query: String,
     player_app: Option<std::process::Child>,
     ipc_to_child: Option<ipc_channel::ipc::IpcSender<Message>>,
     ipc_from_child: Option<ipc_channel::ipc::IpcReceiver<Message>>,
@@ -162,7 +163,12 @@ impl ReDropApp {
         for (name, node) in node {
             match node {
                 preset::Node::PresetId(preset_id) => {
-                    self.show_preset(ui, preset_id);
+                    if self.presets.lists[*preset_id]
+                        .name
+                        .contains(&self.preset_search_query)
+                    {
+                        self.show_preset(ui, preset_id);
+                    }
                 }
                 preset::Node::InnerNode(inner_node) => {
                     egui::CollapsingHeader::new(name).show(ui, |ui| {
@@ -215,6 +221,7 @@ impl eframe::App for ReDropApp {
 
         egui::TopBottomPanel::top("top_panel").show(ctx, |ui| {
             ui.horizontal(|ui| {
+                ui.text_edit_singleline(&mut self.preset_search_query);
                 if ui.button("Config").clicked() {
                     self.show_config = true;
                 }
