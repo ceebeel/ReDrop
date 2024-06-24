@@ -1,4 +1,4 @@
-use eframe::egui;
+use eframe::{egui, glow};
 
 use std::path::Path;
 use std::sync::Arc;
@@ -38,6 +38,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             .with_title("ReDrop Player")
             .with_inner_size([config.window_width, config.window_height])
             .with_resizable(false),
+        // vsync: false,
         ..Default::default()
     };
     eframe::run_native(
@@ -110,6 +111,8 @@ impl PlayerApp {
                 self.config.window_width as usize,
                 self.config.window_height as usize,
             );
+
+            // ctx.set_zoom_factor(1.); // TODO: Fix: zoom not work with project_m
             self.fullscreen = false;
         } else {
             ctx.send_viewport_cmd(egui::viewport::ViewportCommand::Fullscreen(true));
@@ -121,6 +124,7 @@ impl PlayerApp {
             let height = monitor_size.unwrap().y as usize;
             self.project_m.set_window_size(width, height);
 
+            // ctx.set_zoom_factor(2.); // TODO: Fix: zoom not work with project_m
             self.fullscreen = true;
         }
     }
@@ -140,7 +144,7 @@ impl PlayerApp {
     fn load_preset_file(&mut self, path: &Path, smooth: bool) {
         // project_m.load_preset_file does not work fine with special characters like spaces...
         self.current_preset_name = path.file_stem().unwrap().to_string_lossy().into_owned(); // TODO: .into_owned() !?
-        let data = std::fs::read_to_string(path).unwrap();
+        let data = std::fs::read_to_string(path).unwrap(); //TODO : Error handling
         self.project_m.load_preset_data(&data, smooth);
     }
 
@@ -178,6 +182,16 @@ impl PlayerApp {
 impl eframe::App for PlayerApp {
     fn update(&mut self, ctx: &egui::Context, frame: &mut eframe::Frame) {
         // let now = Instant::now(); // Fix sync
+        // use glow::HasContext as _;
+        // let binding = frame.gl();
+        // let gl = binding.as_ref().unwrap();
+        // unsafe {
+        //     gl.clear_color(0., 0., 0., 0.);
+        //     gl.clear(glow::COLOR_BUFFER_BIT | glow::DEPTH_BUFFER_BIT);
+        // };
+        // egui::Window::new("test").show(ctx, |ui| {
+        //     ui.label("test");
+        // });
         self.frame_history
             .on_new_frame(ctx.input(|i| i.time), frame.info().cpu_usage);
         self.project_m.set_fps(self.frame_history.fps() as u32);
@@ -214,17 +228,22 @@ impl eframe::App for PlayerApp {
             self.send_random_preset_request();
         }
 
-        if ctx.input(|i| i.key_pressed(self.config.shortcuts.beat_sensitivity_up))  {
+        if ctx.input(|i| i.key_pressed(self.config.shortcuts.beat_sensitivity_up)) {
             self.config.beat_sensitivity += 0.1;
-            self.project_m.set_beat_sensitivity(self.config.beat_sensitivity);
-            self.ipc_to_parent.send(Message::SetBeatSensitivity(self.config.beat_sensitivity)).unwrap();
+            self.project_m
+                .set_beat_sensitivity(self.config.beat_sensitivity);
+            self.ipc_to_parent
+                .send(Message::SetBeatSensitivity(self.config.beat_sensitivity))
+                .unwrap();
             println!("SetBeatSensitivity: {}", self.config.beat_sensitivity);
-
         }
-        if ctx.input(|i| i.key_pressed(self.config.shortcuts.beat_sensitivity_down))  { 
+        if ctx.input(|i| i.key_pressed(self.config.shortcuts.beat_sensitivity_down)) {
             self.config.beat_sensitivity -= 0.1;
-            self.project_m.set_beat_sensitivity(self.config.beat_sensitivity);
-            self.ipc_to_parent.send(Message::SetBeatSensitivity(self.config.beat_sensitivity)).unwrap();
+            self.project_m
+                .set_beat_sensitivity(self.config.beat_sensitivity);
+            self.ipc_to_parent
+                .send(Message::SetBeatSensitivity(self.config.beat_sensitivity))
+                .unwrap();
             println!("SetBeatSensitivity: {}", self.config.beat_sensitivity);
         }
 
