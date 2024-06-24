@@ -14,10 +14,12 @@ ProjectM (Milkdrop) Music Visualization in Rust.
 - [X] Add Scroll Area
 - [X] Show preset without image in square Button (like img)
 - [ ] Show presets in a Grid Layout (Responsive)
+- [ ] Show presets into a list (label)
+- [ ] Options for showing or not Categories (folders, subfolders)
 - [ ] Change preset time interval on nBar (4 beat)  
   160 bpm, 32 bar -> 48s [4 / ( (160 / 60) ) * 32]
 - [ ] Set Window default size (persistence !?)
-- [ ] Add Search Entry for preset name
+- [X] Add Search Entry for preset name
 
 - [ ] Config View:
   - [X] Save
@@ -43,7 +45,7 @@ ProjectM (Milkdrop) Music Visualization in Rust.
 - [ ] Add projectm_opengl_render_frame_fbo to crate projectM and test it.  
   <https://github.com/projectM-visualizer/projectm/blob/master/src/api/include/projectM-4/render_opengl.h>
 - [ ] Add touch (waveform)
-- [ ] Add Notification Label (for event)
+- [ ] Add Notification Label (for event, preset name)
 - [X] Shortcuts (config)
 
 ### Config
@@ -57,7 +59,7 @@ ProjectM (Milkdrop) Music Visualization in Rust.
   - [ ] Next Preset (N)
   - [ ] Prev. Preset (P)
   - [X] Random Preset (R)
-  - [ ] +/- Beat Sensitivity (UP/DOWN)
+  - [X] +/- Beat Sensitivity (UP/DOWN)
   - [ ] Preset Speed (LEFT/RIGHT)
   - [ ] Rating (+/-)
 - [ ] Data validation, before loading
