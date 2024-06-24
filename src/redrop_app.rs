@@ -83,6 +83,9 @@ impl ReDropApp {
                     Message::SwitchPresetRequest { smooth } => {
                         self.send_switch_preset_request(smooth);
                     }
+                    Message::SetBeatSensitivity(sensitivity) => {
+                        self.config.beat_sensitivity = sensitivity;
+                    }
                     other_message => {
                         panic!("Unhandled message: {:?}", other_message);
                     }
