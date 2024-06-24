@@ -13,8 +13,9 @@ ProjectM (Milkdrop) Music Visualization in Rust.
 
 - [X] Add Scroll Area
 - [X] Show preset without image in square Button (like img)
-- [ ] Show presets in a Grid Layout (Responsive)
-- [ ] Show presets into a list (label)
+- [X] Show presets in a Grid Layout (Responsive)
+- [X] Show presets into a list (label)
+- [ ] Options: list or grid
 - [ ] Options for showing or not Categories (folders, subfolders)
 - [ ] Change preset time interval on nBar (4 beat)  
   160 bpm, 32 bar -> 48s [4 / ( (160 / 60) ) * 32]
@@ -116,7 +117,7 @@ ProjectM (Milkdrop) Music Visualization in Rust.
   > called `Result::unwrap()` on an `Err` value: Error { kind: InvalidData, message: "stream did not contain valid UTF-8" }
 - [ ] ReDrop App: In `show_preset`: Scroll (MouseWheel) not work with `image_hovered`
 - [ ] Redrop App: Openned config `FileDialog` block the app and `check_for_ipc_message` in `update`
-- [ ] ReDrop App: Can't randomize empty list `send_random_preset_file`  
+- [ ] ReDrop App: Can't randomize empty list `send_random_preset_file`  (Show Label: "No preset found, check path in config !")
    > thread 'main' panicked at cargo\registry\src\index.crates.io-6f17d22bba15001f\rand-0.8.5\src\rng.rs:134:9:  
    > cannot sample empty range
 - [ ] Config UI: `DragValue` speed is not step !

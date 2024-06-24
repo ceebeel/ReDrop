@@ -151,7 +151,7 @@ impl ReDropApp {
         } else {
             // TODO: Idea: Create preview image (screenshot) on Right Click // Or all (scan) in Config View
             if ui
-                .add_sized([64., 64.], egui::Button::new(&preset.name)) // TODO Fix: Button size "overflow" if name is too long / This can be a problem with grid..
+                .add_sized([64., 64.], egui::Button::new(&preset.name).wrap(true)) // TODO Fix: Button size "overflow" if name is too long / This can be a problem with grid..
                 .clicked()
             {
                 self.send_load_preset_file(preset.id, self.smooth)
@@ -159,7 +159,61 @@ impl ReDropApp {
         }
     }
 
-    fn show_presets_tree(&self, ui: &mut egui::Ui, node: &BTreeMap<String, preset::Node>) {
+    fn show_preset_flat(&self, ui: &mut egui::Ui, preset_id: &usize) {
+        let preset = &self.presets.lists[*preset_id];
+        if ui
+            .add_sized(
+                [ui.available_width(), 0.],
+                egui::Button::new(&preset.name).wrap(true), // TODO: Text to left
+            ) // TODO Fix: Button size "overflow" if name is too long / This can be a problem with grid..
+            .clicked()
+        {
+            self.send_load_preset_file(preset.id, self.smooth)
+        }
+    }
+
+    fn show_presets_into_tree_grid(
+        &self,
+        ui: &mut egui::Ui,
+        node: &BTreeMap<String, preset::Node>,
+    ) {
+        const MAX_PRESETS_PER_ROW: usize = 8; // TODO: Autosize with ui.available_width() / preset_width
+
+        egui::Grid::new("preset_grid")
+            .num_columns(MAX_PRESETS_PER_ROW)
+            .show(ui, |ui| {
+                let mut preset_count = 0;
+                for (name, node) in node {
+                    match node {
+                        preset::Node::PresetId(preset_id) => {
+                            if self.presets.lists[*preset_id]
+                                .name
+                                .contains(&self.preset_search_query)
+                            {
+                                self.show_preset(ui, preset_id);
+                                preset_count += 1;
+                                if preset_count >= MAX_PRESETS_PER_ROW {
+                                    ui.end_row();
+                                    preset_count = 0;
+                                }
+                            }
+                        }
+                        preset::Node::InnerNode(inner_node) => {
+                            egui::CollapsingHeader::new(name).show(ui, |ui| {
+                                self.show_presets_into_tree_grid(ui, inner_node);
+                            });
+                            ui.end_row();
+                        }
+                    }
+                }
+            });
+    }
+    #[allow(dead_code)]
+    fn show_presets_into_flat_tree(
+        &self,
+        ui: &mut egui::Ui,
+        node: &BTreeMap<String, preset::Node>,
+    ) {
         for (name, node) in node {
             match node {
                 preset::Node::PresetId(preset_id) => {
@@ -167,12 +221,12 @@ impl ReDropApp {
                         .name
                         .contains(&self.preset_search_query)
                     {
-                        self.show_preset(ui, preset_id);
+                        self.show_preset_flat(ui, preset_id);
                     }
                 }
                 preset::Node::InnerNode(inner_node) => {
                     egui::CollapsingHeader::new(name).show(ui, |ui| {
-                        self.show_presets_tree(ui, inner_node);
+                        self.show_presets_into_flat_tree(ui, inner_node);
                     });
                 }
             }
@@ -281,7 +335,8 @@ impl eframe::App for ReDropApp {
             egui::ScrollArea::vertical()
                 .auto_shrink(false)
                 .show(ui, |ui| {
-                    self.show_presets_tree(ui, &self.presets.tree); // TODO: Move presets_tree in the fn
+                    // self.show_presets_into_flat_tree(ui, &self.presets.tree); // TODO: Move presets_tree in the fn
+                    self.show_presets_into_tree_grid(ui, &self.presets.tree);
                 });
         });
     }
