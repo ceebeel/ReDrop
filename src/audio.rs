@@ -1,17 +1,20 @@
+use std::sync::Arc;
+
 use cpal::traits::{DeviceTrait, HostTrait, StreamTrait};
 use cpal::{BufferSize, StreamConfig};
+use projectm::core::ProjectM;
 
-use super::ProjectMWrapped;
+// use super::ProjectMWrapped;
 
 #[derive(Clone)]
 pub struct Audio {
     device: cpal::Device,
-    project_m: ProjectMWrapped,
+    project_m: Arc<ProjectM>,
     pub is_capturing: bool,
 }
 
 impl Audio {
-    pub fn new(project_m: ProjectMWrapped) -> Self {
+    pub fn new(project_m: Arc<ProjectM>) -> Self {
         let host = cpal::default_host();
         let device = host
             .default_input_device()
