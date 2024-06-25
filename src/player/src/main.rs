@@ -7,17 +7,16 @@ use projectm::core::ProjectM;
 // pub type ProjectMWrapped = Arc<ProjectM>;
 
 use crate::ipc_message::{IpcExchange, Message};
-use ipc_channel::ipc;
 use ipc_channel::ipc::IpcSender;
 
 use config::Config;
-
 
 use common::audio;
 use common::config;
 use common::ipc_message;
 
 mod frame_history;
+mod ipc;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     env_logger::init(); // Log to stderr (if you run with `RUST_LOG=debug`).
@@ -25,8 +24,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     // ipc-channel
     let args: Vec<String> = std::env::args().collect();
     let sender = IpcSender::connect(args[1].clone()).unwrap();
-    let (to_child, from_parent) = ipc::channel().unwrap();
-    let (to_parent, from_child) = ipc::channel().unwrap();
+    let (to_child, from_parent) = ipc_channel::ipc::channel().unwrap();
+    let (to_parent, from_child) = ipc_channel::ipc::channel().unwrap();
     sender
         .send(IpcExchange {
             sender: to_child,
@@ -155,34 +154,7 @@ impl PlayerApp {
     }
 
     // ipc-channel
-    fn check_for_ipc_message(&mut self) {
-        if let Ok(message) = self.ipc_from_parent.try_recv() {
-            match message {
-                Message::LoadPresetFile { path, smooth } => self.load_preset_file(&path, smooth),
-                Message::SetPresetDuration(duration) => {
-                    println!("SetPresetDuration: {}", duration); // TODO: Remove this if fixed: too many request (Don't send request before release drag)
-                    self.project_m.set_preset_duration(duration);
-                }
-                Message::LoadConfigFile => {
-                    self.config = config::Config::load_from_file_or_default();
-                    self.load_config(&self.config);
-                }
-                Message::SetBeatSensitivity(sensitivity) => {
-                    println!("SetBeatSensitivity: {}", sensitivity); // TODO: Remove this if fixed: too many request (Don't send request before release drag)
-                    self.project_m.set_beat_sensitivity(sensitivity);
-                }
-                other_message => {
-                    panic!("Unhandled message: {:?}", other_message);
-                }
-            }
-        }
-    }
 
-    fn send_random_preset_request(&self) {
-        self.ipc_to_parent
-            .send(Message::RandomPresetRequest)
-            .unwrap();
-    }
 }
 
 impl eframe::App for PlayerApp {
