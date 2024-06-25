@@ -7,67 +7,76 @@ ProjectM (Milkdrop) Music Visualization in Rust.
 > cargo build -r  
 > cargo run -r
 
+## Dependencies
+
+- ProjectM: `projectm`
+  > sudo apt install build-essential cmake libgl1-mesa-dev mesa-common-dev libglm-dev
+
+  On Windows, use vcpkg for GLEW:  
+  > .\vcpkg install glew:x64-windows-static-md
+- Video: `egui`, `eframe`
+  - > sudo apt-get install libxcb-render0-dev libxcb-shape0-dev libxcb-xfixes0-dev libxkbcommon-dev libssl-dev
+- Audio: `cpal` (TODO: Config Tips audio with ALSA in WSLg)
+- File dialogs: `rfd`
+
 ## TODO
 
-### ReDrop App
+### ReDrop Appcalcul automatique du nombre de colonnes
 
-- [X] Add Scroll Area
-- [X] Show preset without image in square Button (like img)
-- [X] Show presets in a Grid Layout (Responsive)
-- [X] Show presets into a list (label)
-- [ ] Options: list or grid
-- [ ] Options for showing or not Categories (folders, subfolders)
+- [ ] Search Preset:
+  - [ ] Search Categories
+  - [ ] Hide Empty Categories
+- [ ] Grid Layout: auto calcul columns
+- [ ] Show Flat Preset: Align text to the left
 - [ ] Change preset time interval on nBar (4 beat)  
   160 bpm, 32 bar -> 48s [4 / ( (160 / 60) ) * 32]
 - [ ] Set Window default size (persistence !?)
-- [X] Add Search Entry for preset name
+  
+- [ ] Playlist View in bottom:
+  - [ ] Add
+  - [ ] Delete
+  - [ ] Current Preset (colored frame)
+  - [ ] Drag and Drop
 
-- [ ] Config View:
-  - [X] Save
-  - [X] Reload
-  - [X] Reset (Default)
-  - [X] `open` File Dialog
+- Config View:
+  - [ ] Auto fit content
   - [ ] Shortcut table UI
+  - [ ] List Screen Resolutions
+  - [ ] List Audio Devices
+  - [ ] Option: Show presets in flat list or into a grid
+  - [ ] Option: Hide Categories (folders, subfolders)
+  - [ ] Option: Hide Cursor in FullScreen
+  - [ ] Option: Toggle fullscreen on Double Click (One Click for now)
 
 ### Player App
 
-- [X] Set switch preset request Callback
-- [X] Calculate FPS
 - [ ] Sync FPS (Limit)  
   <https://github.com/emilk/egui/issues/1109>  
   <https://github.com/emilk/egui/discussions/342>  
   <https://docs.rs/egui/latest/egui/util/struct.History.html>  
   <https://github.com/projectM-visualizer/frontend-sdl2/blob/master/src/FPSLimiter.cpp>
-- [X] Window Title = ReDrop - { fps } fps - { preset_name }
-- [X] Hide cursor on fullscreen
-- [X] Toggle fullscreen on Double Click (One Click for now)
-- [ ] Set preset error Callback
+- [ ] Set projectM loading preset error Callback
   
 - [ ] Add projectm_opengl_render_frame_fbo to crate projectM and test it.  
   <https://github.com/projectM-visualizer/projectm/blob/master/src/api/include/projectM-4/render_opengl.h>
-- [ ] Add touch (waveform)
 - [ ] Add Notification Label (for event, preset name)
-- [X] Shortcuts (config)
+- [ ] Add touch (waveform)
 
 ### Config
 
-- [X] Add mesh size (8..300)
 - [ ] Check for hard and soft cut, preset_locked  
   <https://github.com/projectM-visualizer/projectm/blob/master/src/api/include/projectM-4/parameters.h>
 - [ ] Shortcut:
-  - [X] Toggle Fullscreen (F, Double Click)
-  - [X] Disable Fullscreen (ESCAPE)
-  - [ ] Next Preset (N)
-  - [ ] Prev. Preset (P)
-  - [X] Random Preset (R)
-  - [X] +/- Beat Sensitivity (UP/DOWN)
-  - [ ] Preset Speed (LEFT/RIGHT)
+  - [ ] Next Preset (N) (Need Playlist)
+  - [ ] Prev. Preset (P) (Need Playlist)
+  - [ ] Preset Speed (LEFT/RIGHT) (Check if up/down fps change annimation speed !?)
   - [ ] Rating (+/-)
 - [ ] Data validation, before loading
 - [ ] `config.toml` in Home directory (.redrop/config.toml) or in current_dir ? (Where to write it by default ?!)
 
 ### Preset
 
+- [ ] Metadata (.redrop)
 - [ ] Rating
 - [ ] Screenshot Preview Image
 - [ ] Mark `warn` (!) if error (stdout) on last play
@@ -76,7 +85,7 @@ ProjectM (Milkdrop) Music Visualization in Rust.
 
 - [ ] Check audio stereo format: cpal vs projectm (pcm), [l,r,l,r,..] or [l,l,..,r,r,..] ?!  
   <https://www.reddit.com/r/rust/comments/s0d65g/cpal_capturing_single_channel_out_of_2_channels/>
-- [ ] List Audio Devices
+- [ ] Select Audio Devices
 - [ ] Audio Buffer Size
 - [ ] Calculate audio buffer size with frame rate (fps) (48000hz / 60 fps = 800)
 - [ ] Capture system Audio Output  
