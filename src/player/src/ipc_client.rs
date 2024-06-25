@@ -1,6 +1,22 @@
 use crate::PlayerApp;
 use common::config;
+use common::ipc_message::IpcExchange;
 use common::ipc_message::Message;
+use ipc_channel::ipc::IpcSender;
+
+pub fn ipc_connect() -> (ipc_channel::ipc::IpcReceiver<Message>, IpcSender<Message>) {
+    let args: Vec<String> = std::env::args().collect();
+    let sender = IpcSender::connect(args[1].clone()).unwrap();
+    let (to_child, from_parent) = ipc_channel::ipc::channel().unwrap();
+    let (to_parent, from_child) = ipc_channel::ipc::channel().unwrap();
+    sender
+        .send(IpcExchange {
+            sender: to_child,
+            receiver: from_child,
+        })
+        .unwrap();
+    (from_parent, to_parent)
+}
 
 impl PlayerApp {
     pub fn check_for_ipc_message(&mut self) {

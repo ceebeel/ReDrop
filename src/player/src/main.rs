@@ -6,33 +6,17 @@ use std::sync::Arc;
 use projectm::core::ProjectM;
 // pub type ProjectMWrapped = Arc<ProjectM>;
 
-use crate::ipc_message::{IpcExchange, Message};
-use ipc_channel::ipc::IpcSender;
-
 use config::Config;
 
 use common::audio;
 use common::config;
-use common::ipc_message;
+use common::ipc_message::Message;
 
 mod frame_history;
-mod ipc;
+mod ipc_client;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     env_logger::init(); // Log to stderr (if you run with `RUST_LOG=debug`).
-
-    // ipc-channel
-    let args: Vec<String> = std::env::args().collect();
-    let sender = IpcSender::connect(args[1].clone()).unwrap();
-    let (to_child, from_parent) = ipc_channel::ipc::channel().unwrap();
-    let (to_parent, from_child) = ipc_channel::ipc::channel().unwrap();
-    sender
-        .send(IpcExchange {
-            sender: to_child,
-            receiver: from_child,
-        })
-        .unwrap();
-
     let config = config::Config::load_from_file_or_default();
     let options = eframe::NativeOptions {
         viewport: egui::ViewportBuilder::default()
@@ -45,7 +29,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     eframe::run_native(
         "ReDrop",
         options,
-        Box::new(|_cc| Box::new(PlayerApp::new(config, from_parent, to_parent))),
+        Box::new(|_cc| Box::new(PlayerApp::new(config))),
     )?;
     Ok(())
 }
@@ -62,14 +46,11 @@ struct PlayerApp {
 }
 
 impl PlayerApp {
-    fn new(
-        config: config::Config,
-        ipc_from_parent: ipc_channel::ipc::IpcReceiver<Message>,
-        ipc_to_parent: ipc_channel::ipc::IpcSender<Message>,
-    ) -> Self {
+    fn new(config: config::Config) -> Self {
+        // TODO: Option: Skip ProjectM default preset (load preset here before playing).
         let project_m = Arc::new(ProjectM::create());
         let audio = audio::Audio::new(Arc::clone(&project_m));
-        // TODO: Option: Skip ProjectM default preset (load preset here before playing).
+        let (ipc_from_parent, ipc_to_parent) = ipc_client::ipc_connect();
 
         let mut player_app = PlayerApp {
             project_m,
@@ -152,9 +133,6 @@ impl PlayerApp {
             self.send_random_preset_request();
         }
     }
-
-    // ipc-channel
-
 }
 
 impl eframe::App for PlayerApp {
