@@ -10,7 +10,7 @@ use common::ipc_message;
 use common::preset;
 
 mod config_view;
-mod ipc;
+mod ipc_server;
 mod main_ui;
 mod presets_ui;
 
