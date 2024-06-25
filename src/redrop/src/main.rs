@@ -119,13 +119,13 @@ impl ReDropApp {
             .unwrap();
     }
 
-    // fn send_load_config_file(&self) {
-    //     self.ipc_to_child
-    //         .as_ref()
-    //         .unwrap()
-    //         .send(Message::LoadConfigFile)
-    //         .unwrap();
-    // }
+    fn send_load_config_file(&self) {
+        self.ipc_to_child
+            .as_ref()
+            .unwrap()
+            .send(Message::LoadConfigFile)
+            .unwrap();
+    }
 
     // UI
     fn show_preset(&self, ui: &mut egui::Ui, preset_id: &usize) {
@@ -246,16 +246,8 @@ impl ReDropApp {
                 .with_inner_size([480.0, 300.0]), // TODO: Auto size to fit content
             |ctx, _class| {
                 egui::CentralPanel::default().show(ctx, |ui| {
-                    let ipc_to_child = &self.ipc_to_child;
-                    let send_load_config_file = || {
-                        ipc_to_child
-                            .as_ref()
-                            .unwrap()
-                            .send(Message::LoadConfigFile)
-                            .unwrap();
-                    };
-                    self.config
-                        .show(&mut self.config_draft, ui, send_load_config_file);
+                    self.show_config_view(ui);
+
                 });
 
                 if ctx.input(|i| i.viewport().close_requested()) {

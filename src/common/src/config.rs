@@ -1,5 +1,3 @@
-// use egui::Vec2;
-// use rfd::FileDialog;
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
@@ -90,5 +88,4 @@ impl Config {
     pub fn restore_defaults(&mut self) {
         *self = Config::default();
     }
-
 }
