@@ -1,8 +1,6 @@
-use std::collections::BTreeMap;
-
-use common::preset;
-
 use crate::ReDropApp;
+use common::preset;
+use std::collections::BTreeMap;
 
 impl ReDropApp {
     pub fn show_presets_into_tree_grid(
