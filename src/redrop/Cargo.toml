@@ -1,0 +1,33 @@
+[package]
+name = "redrop"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+common = { path = "../common" }
+
+
+libc = "*"
+projectm = "2.0.1-alpha"
+egui = "0.27.2"
+eframe = { version = "0.27.2", default-features = false, features = [
+    "accesskit",
+    "default_fonts",
+    "glow",
+] }
+egui_extras = { version = "0.27.2", features = ["all_loaders"] }
+image = { version = "0.24", features = [
+    "jpeg",
+    "png",
+] } # The version needs to be same as the version used by `egui_extra`. (Not working with 0.25.x)
+
+cpal = "0.15.3"
+log = "0.4"
+env_logger = "0.11.3"
+
+# You only need serde if you want app persistence:
+serde = { version = "1.0.203", features = ["derive"] }
+toml = "0.8.14"
+ipc-channel = "0.18.1"
+rand = "0.8.5"
+rfd = "0.14.1"

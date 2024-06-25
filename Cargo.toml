@@ -1,6 +1,6 @@
 [workspace]
-members = ["common", "redrop_app", "player_app"]
-
+members = ["src/common", "src/redrop", "src/player"]
+# default-run = "redrop"
 
 
 
