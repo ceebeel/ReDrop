@@ -7,9 +7,9 @@ edition = "2021"
 [dependencies]
 projectm = "2.0.1-alpha"
 egui = "0.27.2"
-eframe = { version = "0.27.2", default-features = false }
+# eframe = { version = "0.27.2", default-features = false }
 cpal = "0.15.3"
 serde = { version = "1.0.203", features = ["derive"] }
 toml = "0.8.14"
 ipc-channel = "0.18.1"
-rfd = "0.14.1"
+# rfd = "0.14.1"

@@ -10,6 +10,8 @@ use common::config;
 use common::ipc_message;
 use common::preset;
 
+mod config_view;
+
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     env_logger::init();

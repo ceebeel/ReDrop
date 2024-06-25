@@ -21,3 +21,4 @@ env_logger = "0.11.3"
 serde = { version = "1.0.203", features = ["derive"] }
 ipc-channel = "0.18.1"
 rand = "0.8.5"
+rfd = "0.14.1"
