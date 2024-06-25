@@ -24,7 +24,7 @@ ProjectM (Milkdrop) Music Visualization in Rust.
 
 ## TODO
 
-### ReDrop Appcalcul automatique du nombre de colonnes
+### ReDrop App
 
 - [ ] Search Preset:
   - [ ] Search Categories
