@@ -1,0 +1,20 @@
+[package]
+name = "redrop_player"
+version = "0.1.0"
+edition = "2021"
+
+
+[dependencies]
+common = { path = "../common" }
+
+libc = "*"
+projectm = "2.0.1-alpha"
+egui = "0.27.2"
+eframe = { version = "0.27.2", default-features = false, features = [
+    "accesskit",
+    "default_fonts",
+    "glow",
+] }
+log = "0.4"
+env_logger = "0.11.3"
+ipc-channel = "0.18.1"

@@ -4,7 +4,7 @@ ProjectM (Milkdrop) Music Visualization in Rust.
 
 ## Build and Run
 
-> cargo build -r  
+> cargo build --all -r  
 > cargo run -r
 
 ## Dependencies
