@@ -101,10 +101,7 @@ impl ReDropApp {
     fn show_preset_flat(&self, ui: &mut egui::Ui, preset_id: &usize) {
         let preset = &self.presets.lists[*preset_id];
         if ui
-            .add_sized(
-                [ui.available_width(), 0.],
-                egui::Button::new(&preset.name).wrap(true), // TODO: Text to left
-            ) // TODO Fix: Button size "overflow" if name is too long / This can be a problem with grid..
+            .add(egui::Button::new(&preset.name).wrap(true).frame(false))
             .clicked()
         {
             self.send_load_preset_file(preset.id, self.smooth)
