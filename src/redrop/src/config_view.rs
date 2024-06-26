@@ -41,12 +41,13 @@ impl ReDropApp {
                 absolute_path = std::env::current_dir().unwrap().join(path);
             }
 
-            let directory = rfd::FileDialog::new()
+            if let Some(directory) = rfd::FileDialog::new()
                 .set_directory(absolute_path)
-                .set_title(format!("ReDrop - Select Folder for {}", name))
-                .pick_folder();
-            let selected = directory.unwrap(); // TODO: Handle error, or_default !?
-            *value = selected.to_string_lossy().into_owned();
+                .set_title(String::from("ReDrop - Select Folder for ") + name)
+                .pick_folder()
+            {
+                *value = directory.to_string_lossy().into_owned();
+            }
         }
         ui.end_row();
     }
