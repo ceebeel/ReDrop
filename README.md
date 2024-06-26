@@ -26,9 +26,7 @@ ProjectM (Milkdrop) Music Visualization in Rust.
 
 ### ReDrop App
 
-- [ ] Search Preset:
-  - [ ] Search Categories
-  - [ ] Hide Empty Categories
+- [X] Filter preset / Hide Empty Categories
 - [X] Grid Layout: Responsive
 - [X] Show Flat Preset: Align text to the left
 - [ ] Change preset time interval on nBar (4 beat)  
