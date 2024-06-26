@@ -1,11 +1,18 @@
 use crate::ReDropApp;
 use common::ipc_message::Message;
+use common::preset::filter_presets_tree;
 
 impl ReDropApp {
     pub fn show_main_ui(&mut self, ctx: &egui::Context) {
         egui::TopBottomPanel::top("top_panel").show(ctx, |ui| {
             ui.horizontal(|ui| {
-                ui.text_edit_singleline(&mut self.preset_search_query);
+                if ui
+                    .add(egui::TextEdit::singleline(&mut self.preset_search_query))
+                    .changed()
+                {
+                    self.filtered_presets_tree =
+                        filter_presets_tree(&self.preset_search_query, &self.presets.tree);
+                }
                 if ui.button("Config").clicked() {
                     self.show_config = true;
                 }
@@ -68,11 +75,9 @@ impl ReDropApp {
                     // self.show_presets_into_flat_tree(ui, &self.presets.tree);
                     let option_grid = true; // TODO: Option in config [ReDrop]
                     if option_grid {
-                        self.show_presets_into_tree_grid(ui, &self.presets.tree);
-                    // TODO: Move presets_tree in the fn
+                        self.show_presets_into_tree_grid(ui, &self.filtered_presets_tree);
                     } else {
-                        self.show_presets_into_flat_tree(ui, &self.presets.tree);
-                        // TODO: Move presets_tree in the fn
+                        self.show_presets_into_flat_tree(ui, &self.filtered_presets_tree);
                     }
                 });
         });

@@ -1,5 +1,6 @@
 use eframe::egui;
 
+use std::collections::BTreeMap;
 use std::path::Path;
 
 use crate::ipc_message::{IpcExchange, Message};
@@ -34,6 +35,7 @@ struct ReDropApp {
     config_draft: config::Config,
     show_config: bool,
     presets: preset::Presets,
+    filtered_presets_tree: BTreeMap<String, preset::Node>,
     smooth: bool,
     preset_search_query: String,
     player_app: Option<std::process::Child>,
@@ -48,6 +50,7 @@ impl ReDropApp {
         slf.config_draft = slf.config.clone();
         slf.presets
             .update_presets_lists_and_tree(Path::new(&slf.config.presets_path));
+        slf.filtered_presets_tree = slf.presets.tree.clone();
 
         let (ipc_server, server_name) = IpcOneShotServer::<IpcExchange>::new().unwrap();
 
