@@ -82,12 +82,7 @@ impl ReDropApp {
         for (name, node) in node {
             match node {
                 preset::Node::PresetId(preset_id) => {
-                    if self.presets.lists[*preset_id]
-                        .name
-                        .contains(&self.preset_search_query)
-                    {
-                        self.show_preset_flat(ui, preset_id);
-                    }
+                    self.show_preset_flat(ui, preset_id);
                 }
                 preset::Node::InnerNode(inner_node) => {
                     egui::CollapsingHeader::new(name).show(ui, |ui| {
