@@ -17,16 +17,11 @@ impl ReDropApp {
                 for (name, node) in node {
                     match node {
                         preset::Node::PresetId(preset_id) => {
-                            if self.presets.lists[*preset_id]
-                                .name
-                                .contains(&self.preset_search_query)
-                            {
-                                self.show_preset(ui, preset_id);
-                                preset_count += 1;
-                                if preset_count >= max_preset_per_row {
-                                    ui.end_row();
-                                    preset_count = 0;
-                                }
+                            self.show_preset(ui, preset_id);
+                            preset_count += 1;
+                            if preset_count >= max_preset_per_row {
+                                ui.end_row();
+                                preset_count = 0;
                             }
                         }
                         preset::Node::InnerNode(inner_node) => {
@@ -41,7 +36,6 @@ impl ReDropApp {
     }
 
     fn show_preset(&self, ui: &mut egui::Ui, preset_id: &usize) {
-        // TODO: Add image button into a Grid (Responsive ?)
         let preset = &self.presets.lists[*preset_id];
         if let Some(img_path) = &preset.img {
             let file_path = "file://".to_owned() + img_path.to_str().unwrap();
