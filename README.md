@@ -29,7 +29,7 @@ ProjectM (Milkdrop) Music Visualization in Rust.
 - [ ] Search Preset:
   - [ ] Search Categories
   - [ ] Hide Empty Categories
-- [ ] Grid Layout: auto calcul columns
+- [X] Grid Layout: Responsive
 - [ ] Show Flat Preset: Align text to the left
 - [ ] Change preset time interval on nBar (4 beat)  
        160 bpm, 32 bar -> 48s [4 / ( (160 / 60) ) * 32]

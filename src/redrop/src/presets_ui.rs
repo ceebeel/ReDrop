@@ -8,12 +8,12 @@ impl ReDropApp {
         ui: &mut egui::Ui,
         node: &BTreeMap<String, preset::Node>,
     ) {
-        const MAX_PRESETS_PER_ROW: usize = 8; // TODO: Autosize with ui.available_width() / preset_width
-
         egui::Grid::new("preset_grid")
-            .num_columns(MAX_PRESETS_PER_ROW)
+            .num_columns(1)
+            .spacing([4., 4.])
             .show(ui, |ui| {
                 let mut preset_count = 0;
+                let max_preset_per_row = (ui.available_width() / 68.) as usize; // Preset width = 64. + 4. (spacing)
                 for (name, node) in node {
                     match node {
                         preset::Node::PresetId(preset_id) => {
@@ -23,7 +23,7 @@ impl ReDropApp {
                             {
                                 self.show_preset(ui, preset_id);
                                 preset_count += 1;
-                                if preset_count >= MAX_PRESETS_PER_ROW {
+                                if preset_count >= max_preset_per_row {
                                     ui.end_row();
                                     preset_count = 0;
                                 }
