@@ -14,6 +14,7 @@ use common::ipc_message::Message;
 
 mod frame_history;
 mod ipc_client;
+mod main_ui;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     env_logger::init(); // Log to stderr (if you run with `RUST_LOG=debug`).
@@ -73,7 +74,6 @@ impl PlayerApp {
         std::thread::spawn(move || audio.capture_audio()); // TODO : arg: frame rate
     }
 
-    // ProjecM Callbacks
     fn set_preset_swithch_request_callback(&mut self) {
         let ipc_to_parent = self.ipc_to_parent.clone();
         self.project_m
@@ -82,33 +82,6 @@ impl PlayerApp {
                     .send(Message::SwitchPresetRequest { smooth: cut })
                     .unwrap();
             });
-    }
-
-    // TODO: Zoom on viewport VS resize viewport (project_m) (maybe ctx.zoom_factor ?!)
-    fn toggle_fullscreen(&mut self, ctx: &egui::Context) {
-        if self.fullscreen {
-            ctx.send_viewport_cmd(egui::viewport::ViewportCommand::Fullscreen(false));
-            ctx.send_viewport_cmd(egui::viewport::ViewportCommand::CursorVisible(true));
-            self.project_m.set_window_size(
-                self.config.window_width as usize,
-                self.config.window_height as usize,
-            );
-
-            // ctx.set_zoom_factor(1.); // TODO: Fix: zoom not work with project_m
-            self.fullscreen = false;
-        } else {
-            ctx.send_viewport_cmd(egui::viewport::ViewportCommand::Fullscreen(true));
-            ctx.send_viewport_cmd(egui::viewport::ViewportCommand::CursorVisible(false));
-
-            // Resize viewport
-            let monitor_size = ctx.input(|i| i.viewport().monitor_size);
-            let width = monitor_size.unwrap().x as usize;
-            let height = monitor_size.unwrap().y as usize;
-            self.project_m.set_window_size(width, height);
-
-            // ctx.set_zoom_factor(2.); // TODO: Fix: zoom not work with project_m
-            self.fullscreen = true;
-        }
     }
 
     pub fn load_config(&self, config: &Config) {
@@ -137,17 +110,6 @@ impl PlayerApp {
 
 impl eframe::App for PlayerApp {
     fn update(&mut self, ctx: &egui::Context, frame: &mut eframe::Frame) {
-        // let now = Instant::now(); // Fix sync
-        // use glow::HasContext as _;
-        // let binding = frame.gl();
-        // let gl = binding.as_ref().unwrap();
-        // unsafe {
-        //     gl.clear_color(0., 0., 0., 0.);
-        //     gl.clear(glow::COLOR_BUFFER_BIT | glow::DEPTH_BUFFER_BIT);
-        // };
-        // egui::Window::new("test").show(ctx, |ui| {
-        //     ui.label("test");
-        // });
         self.frame_history
             .on_new_frame(ctx.input(|i| i.time), frame.info().cpu_usage);
         self.project_m.set_fps(self.frame_history.fps() as u32);
@@ -164,44 +126,10 @@ impl eframe::App for PlayerApp {
         }
 
         self.check_for_ipc_message();
+        self.check_for_input_shortcuts(ctx);
 
         self.project_m.render_frame();
         ctx.request_repaint();
-
-        if ctx.input(|i| {
-            i.key_pressed(self.config.shortcuts.toggle_fullscreen) || i.pointer.any_click()
-        }) {
-            // TODO: Fix: any_click() to double click
-            self.toggle_fullscreen(ctx);
-        }
-
-        if ctx.input(|i| i.key_pressed(self.config.shortcuts.disable_fullscreen)) && self.fullscreen
-        {
-            self.toggle_fullscreen(ctx);
-        }
-
-        if ctx.input(|i| i.key_pressed(self.config.shortcuts.random_preset)) {
-            self.send_random_preset_request();
-        }
-
-        if ctx.input(|i| i.key_pressed(self.config.shortcuts.beat_sensitivity_up)) {
-            self.config.beat_sensitivity += 0.1;
-            self.project_m
-                .set_beat_sensitivity(self.config.beat_sensitivity);
-            self.ipc_to_parent
-                .send(Message::SetBeatSensitivity(self.config.beat_sensitivity))
-                .unwrap();
-            println!("SetBeatSensitivity: {}", self.config.beat_sensitivity);
-        }
-        if ctx.input(|i| i.key_pressed(self.config.shortcuts.beat_sensitivity_down)) {
-            self.config.beat_sensitivity -= 0.1;
-            self.project_m
-                .set_beat_sensitivity(self.config.beat_sensitivity);
-            self.ipc_to_parent
-                .send(Message::SetBeatSensitivity(self.config.beat_sensitivity))
-                .unwrap();
-            println!("SetBeatSensitivity: {}", self.config.beat_sensitivity);
-        }
 
         // self.frame_history.limit_fps(now); // TODO : Fix sync
     }
