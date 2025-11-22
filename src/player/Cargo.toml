@@ -7,11 +7,11 @@ edition = "2021"
 [dependencies]
 common = { path = "../common" }
 
-libc = "*"
+# libc = "*"
 projectm = "2.0.1-alpha"
 egui = "0.27.2"
 eframe = { version = "0.27.2", default-features = false, features = [
-    "accesskit",
+    # "accesskit",
     "default_fonts",
     "glow",
 ] }
