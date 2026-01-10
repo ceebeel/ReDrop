@@ -9,6 +9,7 @@ pub struct Preset {
     pub img: Option<PathBuf>,
 }
 
+#[derive(Debug, Clone)]
 pub enum Node {
     PresetId(usize),
     InnerNode(BTreeMap<String, Node>),
@@ -50,7 +51,7 @@ impl Presets {
                             path: path.clone(),
                             img: if img.exists() { Some(img) } else { None },
                         };
-                        node.insert(name, Node::PresetId(preset_id));
+                        node.insert(name.to_lowercase(), Node::PresetId(preset_id));
                         self.lists.push(preset);
                     }
                 }
@@ -59,7 +60,26 @@ impl Presets {
                 println!("Error: Check `presets path` in config ! ({})", e);
             }
         }
-
         node
     }
+}
+
+pub fn filter_presets_tree(query: &str, node: &BTreeMap<String, Node>) -> BTreeMap<String, Node> {
+    let mut filtered_node = BTreeMap::new();
+    for (name, node) in node {
+        match node {
+            Node::PresetId(_) => {
+                if name.contains(query.to_lowercase().as_str()) {
+                    filtered_node.insert(name.clone(), node.clone());
+                }
+            }
+            Node::InnerNode(inner_node) => {
+                let filtered_inner = filter_presets_tree(query, inner_node);
+                if !filtered_inner.is_empty() {
+                    filtered_node.insert(name.clone(), Node::InnerNode(filtered_inner));
+                }
+            }
+        }
+    }
+    filtered_node
 }

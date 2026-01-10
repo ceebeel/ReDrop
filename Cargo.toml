@@ -4,4 +4,8 @@ default-members = ["src/redrop"]
 resolver = "2"
 
 [profile.release]
-opt-level = 2 # fast and small wasm
+opt-level = "z"
+codegen-units = 1
+lto = "fat"
+panic = "abort"
+strip = "symbols"

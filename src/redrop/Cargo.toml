@@ -7,14 +7,14 @@ edition = "2021"
 common = { path = "../common" }
 egui = "0.27.2"
 eframe = { version = "0.27.2", default-features = false, features = [
-    "accesskit",
+    # "accesskit",
     "default_fonts",
     "glow",
 ] }
-egui_extras = { version = "0.27.2", features = ["all_loaders"] }
+egui_extras = { version = "0.27.2", features = ["file", "image"] }
 image = { version = "0.24", features = [
     "jpeg",
-    "png",
+    # "png
 ] } # The version needs to be same as the version used by `egui_extra`. (Not working with 0.25.x)
 log = "0.4"
 env_logger = "0.11.3"
